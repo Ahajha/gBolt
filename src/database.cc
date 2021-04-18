@@ -8,7 +8,7 @@
 namespace gbolt {
 
 void Database::read_input(const string &input_file, const string &separator) {
-  std::ifstream fin(input_file.c_str());
+  std::ifstream fin(input_file);
   char line[FILE_MAX_LINE];
 
   if (!fin.is_open()) {

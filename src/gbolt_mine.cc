@@ -44,11 +44,11 @@ void GBolt::report(const DfsCodes &dfs_codes, const Projection &projection,
   build_graph(dfs_codes, graph);
 
   for (const auto& vertex : graph.get_vertice()) {
-    ss << "v " << vertex.id << " " << vertex.label << std::endl;
+    ss << "v " << vertex.id << " " << vertex.label << '\n';
   }
   for (const auto edge : dfs_codes) {
     ss << "e " << edge->from << " " << edge->to
-      << " " << edge->edge_label << std::endl;
+      << " " << edge->edge_label << '\n';
   }
   ss << "x: ";
   int prev = 0;
@@ -58,7 +58,7 @@ void GBolt::report(const DfsCodes &dfs_codes, const Projection &projection,
       ss << prev << " ";
     }
   }
-  ss << std::endl;
+  ss << '\n';
   #ifdef GBOLT_SERIAL
   gbolt_instance_t *instance = gbolt_instances_;
   #else
@@ -90,12 +90,12 @@ void GBolt::save(bool output_parent, bool output_pattern, bool output_frequent_n
       std::stringstream ss;
 
       ss << "v 0 " + std::to_string(kv_pair.first);
-      ss << std::endl;
+      ss << '\n';
       ss << "x: ";
       for (auto g_id : kv_pair.second) {
         ss << g_id << " ";
       }
-      ss << std::endl;
+      ss << '\n';
 
       output_frequent_nodes_->push_back(ss.str(), kv_pair.second.size(), graph_id++);
     }

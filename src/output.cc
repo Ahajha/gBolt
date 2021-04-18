@@ -18,18 +18,18 @@ void Output::push_back(const string &str, int nsupport, int graph_id, int thread
 }
 
 void Output::save(bool output_parent, bool output_pattern) {
-  std::ofstream out(output_file_.c_str());
+  std::ofstream out(output_file_);
 
   for (std::size_t i = 0; i < buffer_.size(); ++i) {
-    out << "t # " << graph_id_[i] << " * " << support_[i] << std::endl;
+    out << "t # " << graph_id_[i] << " * " << support_[i] << '\n';
     if (output_parent) {
       if (parent_id_[i] == -1)
-        out << "parent : -1" << std::endl;
+        out << "parent : -1\n";
       else
-        out << "parent : " << parent_id_[i] << " thread : " << thread_id_[i] << std::endl;
+        out << "parent : " << parent_id_[i] << " thread : " << thread_id_[i] << '\n';
     }
     if (output_pattern) {
-      out << buffer_[i] << std::endl;
+      out << buffer_[i] << '\n';
     }
   }
 }
