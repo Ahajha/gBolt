@@ -29,7 +29,6 @@ void Database::read_input(const string &input_file, const string &separator) {
     }
     ++num_line;
   }
-  fin.close();
 }
 
 // Construct graph

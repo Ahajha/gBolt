@@ -32,7 +32,6 @@ void Output::save(bool output_parent, bool output_pattern) {
       out << buffer_[i] << std::endl;
     }
   }
-  out.close();
 }
 
 }  // namespace gbolt
