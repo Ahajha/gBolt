@@ -218,10 +218,7 @@ bool GBolt::judge_forward(
       }
     }
   }
-  if (projection.size() > projection_end_index)
-    return true;
-  else 
-    return false;
+  return projection.size() > projection_end_index;
 }
 
 bool GBolt::is_projection_min(
