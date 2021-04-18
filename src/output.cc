@@ -22,13 +22,13 @@ void Output::save(bool output_parent, bool output_pattern) {
 
   for (std::size_t i = 0; i < buffer_.size(); ++i) {
     out << "t # " << graph_id_[i] << " * " << support_[i] << std::endl;
-    if (output_parent == true) {
+    if (output_parent) {
       if (parent_id_[i] == -1)
         out << "parent : -1" << std::endl;
       else
         out << "parent : " << parent_id_[i] << " thread : " << thread_id_[i] << std::endl;
     }
-    if (output_pattern == true) {
+    if (output_pattern) {
       out << buffer_[i] << std::endl;
     }
   }
