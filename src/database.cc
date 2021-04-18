@@ -17,6 +17,10 @@ void Database::read_input(const string &input_file, const string &separator) {
 
   while (fin.getline(line, FILE_MAX_LINE)) {
     char *pch = strtok(line, separator.c_str());
+
+    // Empty line, just skip
+    if (!pch) continue;
+
     input_.emplace_back();
     if (*pch == 't') {
       ++num_graph_;
