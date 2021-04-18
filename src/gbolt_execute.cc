@@ -51,7 +51,7 @@ void GBolt::init_instances(const vector<Graph> &graphs) {
   for (const auto& graph : graphs) {
     max_edges = std::max(graph.get_nedges(), max_edges);
     max_vertice = std::max(
-      static_cast<int>(graph.get_p_vertice()->size()), max_vertice);
+      static_cast<int>(graph.size()), max_vertice);
   }
 
   // Init an instance for each thread
@@ -75,7 +75,7 @@ void GBolt::project(const vector<Graph> &graphs) {
   // Construct the first edge
   for (const auto& graph : graphs) {
 
-    for (const auto& vertex : *(graph.get_p_vertice())) {
+    for (const auto& vertex : graph.get_vertice()) {
       Edges edges;
 
       if (get_forward_init(vertex, graph, edges)) {

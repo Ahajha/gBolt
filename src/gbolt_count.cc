@@ -20,26 +20,26 @@ int GBolt::count_support(const Projection &projection) {
 
 void GBolt::build_graph(const DfsCodes &dfs_codes, Graph &graph) {
   int edge_id = 0;
-  Vertice *vertice = graph.get_p_vertice();
+  Vertice& vertice = graph.get_vertice();
 
   // New size is just large enough to ensure no extra vertices at the end.
   std::size_t new_size = 0;
   for (const auto edge : dfs_codes) {
     // manually specify type for std::max to widen int to std::size_t
-    new_size = std::max<std::size_t>(std::max(edge->from, edge->to) + 1, vertice->size());
+    new_size = std::max<std::size_t>(std::max(edge->from, edge->to) + 1, vertice.size());
   }
-  vertice->resize(new_size);
+  vertice.resize(new_size);
 
   for (const auto edge : dfs_codes) {
     // Push vertice
-    (*vertice)[edge->from].label = edge->from_label;
-    (*vertice)[edge->from].id = edge->from;
-    (*vertice)[edge->to].label = edge->to_label;
-    (*vertice)[edge->to].id = edge->to;
+    vertice[edge->from].label = edge->from_label;
+    vertice[edge->from].id = edge->from;
+    vertice[edge->to].label = edge->to_label;
+    vertice[edge->to].id = edge->to;
     // Push an edge
-    (*vertice)[edge->from].edges.emplace_back(
+    vertice[edge->from].edges.emplace_back(
       edge->from, edge->edge_label, edge->to, edge_id);
-    (*vertice)[edge->to].edges.emplace_back(
+    vertice[edge->to].edges.emplace_back(
       edge->to, edge->edge_label, edge->from, edge_id);
     ++edge_id;
   }
@@ -73,7 +73,7 @@ bool GBolt::is_min(const DfsCodes &dfs_codes) {
   dfs_code_t min_dfs_code;
   bool first_dfs_code = true;
 
-  for (const auto& vertex : *(min_graph->get_p_vertice())) {
+  for (const auto& vertex : min_graph->get_vertice()) {
     Edges edges;
 
     if (get_forward_init(vertex, *min_graph, edges)) {

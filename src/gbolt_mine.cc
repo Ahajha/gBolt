@@ -12,7 +12,7 @@ void GBolt::find_frequent_nodes_and_edges(const vector<Graph> &graphs) {
   for (auto i = 0; i < graphs.size(); ++i) {
     unordered_set<int> vertex_set;
     unordered_set<int> edge_set;
-    for (const auto& vertex : *(graphs[i].get_p_vertice())) {
+    for (const auto& vertex : graphs[i].get_vertice()) {
       vertex_set.insert(vertex.label);
       for (const auto& edge : vertex.edges) {
         edge_set.insert(edge.label);
@@ -43,7 +43,7 @@ void GBolt::report(const DfsCodes &dfs_codes, const Projection &projection,
   Graph graph;
   build_graph(dfs_codes, graph);
 
-  for (const auto& vertex : *(graph.get_p_vertice())) {
+  for (const auto& vertex : graph.get_vertice()) {
     ss << "v " << vertex.id << " " << vertex.label << std::endl;
   }
   for (const auto edge : dfs_codes) {

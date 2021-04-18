@@ -149,8 +149,12 @@ class Graph {
     return nedges_;
   }
 
-  void set_vertice(const Vertice& vertice) {
-    vertice_ = vertice;
+  Vertice& get_vertice() {
+    return vertice_;
+  }
+
+  const Vertice& get_vertice() const {
+    return vertice_;
   }
 
   Vertice *get_p_vertice() {
