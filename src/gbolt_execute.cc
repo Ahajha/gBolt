@@ -48,10 +48,10 @@ void GBolt::init_instances(const vector<Graph> &graphs) {
   // Prepare history instance
   int max_edges = 0;
   int max_vertice = 0;
-  for (auto i = 0; i < graphs.size(); ++i) {
-    max_edges = std::max(graphs[i].get_nedges(), max_edges);
+  for (const auto& graph : graphs) {
+    max_edges = std::max(graph.get_nedges(), max_edges);
     max_vertice = std::max(
-      static_cast<int>(graphs[i].get_p_vertice()->size()), max_vertice);
+      static_cast<int>(graph.get_p_vertice()->size()), max_vertice);
   }
 
   // Init an instance for each thread
@@ -73,21 +73,19 @@ void GBolt::project(const vector<Graph> &graphs) {
   ProjectionMap projection_map;
 
   // Construct the first edge
-  for (auto i = 0; i < graphs.size(); ++i) {
-    const Graph &graph = graphs[i];
+  for (const auto& graph : graphs) {
 
-    for (auto j = 0; j < graph.size(); ++j) {
-      const vertex_t *vertex = graph.get_p_vertex(j);
+    for (const auto& vertex : *(graph.get_p_vertice())) {
       Edges edges;
 
-      if (get_forward_init(*vertex, graph, edges)) {
-        for (auto k = 0; k < edges.size(); ++k) {
-          const vertex_t *vertex_from = graph.get_p_vertex(edges[k]->from);
-          const vertex_t *vertex_to = graph.get_p_vertex(edges[k]->to);
+      if (get_forward_init(vertex, graph, edges)) {
+        for (const auto& edge : edges) {
+          const vertex_t *vertex_from = graph.get_p_vertex(edge->from);
+          const vertex_t *vertex_to = graph.get_p_vertex(edge->to);
           // Push dfs code according to the same edge label
-          dfs_code_t dfs_code(0, 1, vertex_from->label, edges[k]->label, vertex_to->label);
+          dfs_code_t dfs_code(0, 1, vertex_from->label, edge->label, vertex_to->label);
           // Push all the graphs
-          projection_map[dfs_code].emplace_back(graphs[i].get_id(), edges[k], (const prev_dfs_t *)NULL);
+          projection_map[dfs_code].emplace_back(graph.get_id(), edge, (const prev_dfs_t *)NULL);
         }
       }
     }
@@ -105,21 +103,21 @@ void GBolt::project(const vector<Graph> &graphs) {
   #pragma omp single nowait
   #endif
   {
-    for (auto it = projection_map.begin(); it != projection_map.end(); ++it) {
+    for (const auto& kv_pair : projection_map) {
       // Parital pruning, like apriori
-      Projection &projection = it->second;
+      const Projection &projection = kv_pair.second;
       int nsupport = count_support(projection);
       if (nsupport < nsupport_) {
         continue;
       }
       #ifdef GBOLT_SERIAL
-      dfs_codes.emplace_back(&(it->first));
+      dfs_codes.emplace_back(&(kv_pair.first));
       mine_subgraph(graphs, projection, dfs_codes, nsupport, prev_thread_id, prev_graph_id);
       dfs_codes.pop_back();
       #else
       #pragma omp task shared(graphs, projection, prev_thread_id, prev_graph_id) firstprivate(dfs_codes, nsupport)
       {
-        dfs_codes.emplace_back(&(it->first));
+        dfs_codes.emplace_back(&(kv_pair.first));
         mine_subgraph(graphs, projection, dfs_codes, nsupport, prev_thread_id, prev_graph_id);
       }
       #endif
