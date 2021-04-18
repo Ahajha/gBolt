@@ -109,7 +109,6 @@ bool GBolt::judge_backward(
   MinProjection &projection,
   size_t projection_start_index,
   size_t projection_end_index) {
-  int min_label = min_dfs_codes[0]->from_label;
   bool first_dfs_code = true;
 
   // i > 1, because it cannot reach the path itself

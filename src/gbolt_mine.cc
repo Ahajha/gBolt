@@ -144,11 +144,6 @@ void GBolt::mine_subgraph(
     if (nsupport < nsupport_) {
       continue;
     }
-    int from = (it->first).from;
-    int to = (it->first).to;
-    int from_label = (it->first).from_label;
-    int edge_label = (it->first).edge_label;
-    int to_label = (it->first).to_label;
     #ifdef GBOLT_SERIAL
     dfs_codes.emplace_back(&(it->first));
     mine_subgraph(graphs, projection, dfs_codes, nsupport, prev_thread_id, prev_graph_id);
@@ -168,11 +163,6 @@ void GBolt::mine_subgraph(
     if (nsupport < nsupport_) {
       continue;
     }
-    int from = (it->first).from;
-    int to = (it->first).to;
-    int from_label = (it->first).from_label;
-    int edge_label = (it->first).edge_label;
-    int to_label = (it->first).to_label;
     #ifdef GBOLT_SERIAL
     dfs_codes.emplace_back(&(it->first));
     mine_subgraph(graphs, projection, dfs_codes, nsupport, prev_thread_id, prev_graph_id);

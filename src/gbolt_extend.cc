@@ -52,7 +52,6 @@ void GBolt::get_backward(
   ProjectionMapBackward &projection_map_backward) {
   const edge_t *last_edge = history.get_p_edge(right_most_path[0]);
   const vertex_t *last_node = graph.get_p_vertex(last_edge->to);
-  int min_label = dfs_codes[0]->from_label;
 
   for (auto i = right_most_path.size(); i > 1; --i) {
     const edge_t *edge = history.get_p_edge(right_most_path[i - 1]);
