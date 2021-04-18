@@ -1,6 +1,5 @@
 #include <gbolt.h>
 #include <history.h>
-#include <path.h>
 #include <common.h>
 
 namespace gbolt {
@@ -9,7 +8,7 @@ void GBolt::enumerate(
   const vector<Graph> &graphs,
   const DfsCodes &dfs_codes,
   const Projection &projection,
-  const Path<int> &right_most_path,
+  const std::vector<int> &right_most_path,
   ProjectionMapBackward &projection_map_backward,
   ProjectionMapForward &projection_map_forward) {
   #ifdef GBOLT_SERIAL
@@ -49,7 +48,7 @@ void GBolt::get_backward(
   const History &history,
   const Graph &graph,
   const DfsCodes &dfs_codes,
-  const Path<int> &right_most_path,
+  const std::vector<int> &right_most_path,
   ProjectionMapBackward &projection_map_backward) {
   const edge_t *last_edge = history.get_p_edge(right_most_path[0]);
   const vertex_t *last_node = graph.get_p_vertex(last_edge->to);
@@ -82,7 +81,7 @@ void GBolt::get_first_forward(
   const History &history,
   const Graph &graph,
   const DfsCodes &dfs_codes,
-  const Path<int> &right_most_path,
+  const std::vector<int> &right_most_path,
   ProjectionMapForward &projection_map_forward) {
   const edge_t *last_edge = history.get_p_edge(right_most_path[0]);
   const vertex_t *last_node = graph.get_p_vertex(last_edge->to);
@@ -111,7 +110,7 @@ void GBolt::get_other_forward(
   const History &history,
   const Graph &graph,
   const DfsCodes &dfs_codes,
-  const Path<int> &right_most_path,
+  const std::vector<int> &right_most_path,
   ProjectionMapForward &projection_map_forward) {
   int min_label = dfs_codes[0]->from_label;
 

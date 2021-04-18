@@ -4,7 +4,6 @@
 #include <common.h>
 #include <graph.h>
 #include <history.h>
-#include <path.h>
 #include <output.h>
 #include <map>
 #include <vector>
@@ -17,7 +16,7 @@ struct gbolt_instance_t {
   DfsCodes *min_dfs_codes = NULL;
   History *history = NULL;
   Output *output = NULL;
-  Path<int> *right_most_path = NULL;
+  std::vector<int> *right_most_path = NULL;
   MinProjection *min_projection = NULL;
 
   ~gbolt_instance_t() {
@@ -71,7 +70,7 @@ class GBolt {
     int prev_graph_id);
 
   // Extend
-  void build_right_most_path(const DfsCodes &dfs_codes, Path<int> &right_most_path) {
+  void build_right_most_path(const DfsCodes &dfs_codes, std::vector<int> &right_most_path) {
     int prev_id = -1;
 
     for (auto i = dfs_codes.size(); i > 0; --i) {
@@ -83,13 +82,13 @@ class GBolt {
     }
   }
 
-  void update_right_most_path(const DfsCodes &dfs_codes, Path<int> &right_most_path) {
+  void update_right_most_path(const DfsCodes &dfs_codes, std::vector<int> &right_most_path) {
     auto *last_dfs_code = dfs_codes.back();
     // filter out a simple case
     if (last_dfs_code->from > last_dfs_code->to) {
       return;
     }
-    right_most_path.reset();
+    right_most_path.clear();
     build_right_most_path(dfs_codes, right_most_path);
   }
 
@@ -97,7 +96,7 @@ class GBolt {
     const vector<Graph> &graphs,
     const DfsCodes &dfs_codes,
     const Projection &projection,
-    const Path<int> &right_most_path,
+    const std::vector<int> &right_most_path,
     ProjectionMapBackward &projection_map_backward,
     ProjectionMapForward &projection_map_forward);
 
@@ -111,7 +110,7 @@ class GBolt {
     const History &history,
     const Graph &graph,
     const DfsCodes &dfs_codes,
-    const Path<int> &right_most_path,
+    const std::vector<int> &right_most_path,
     ProjectionMapForward &projection_map_forward);
 
   void get_other_forward(
@@ -119,7 +118,7 @@ class GBolt {
     const History &history,
     const Graph &graph,
     const DfsCodes &dfs_codes,
-    const Path<int> &right_most_path,
+    const std::vector<int> &right_most_path,
     ProjectionMapForward &projection_map_forward);
 
   void get_backward(
@@ -127,7 +126,7 @@ class GBolt {
     const History &history,
     const Graph &graph,
     const DfsCodes &dfs_codes,
-    const Path<int> &right_most_path,
+    const std::vector<int> &right_most_path,
     ProjectionMapBackward &projection_map_backward);
 
   // Count
@@ -142,12 +141,12 @@ class GBolt {
     const Graph &min_graph,
     History &history,
     DfsCodes &min_dfs_codes,
-    Path<int> &right_most_path,
+    std::vector<int> &right_most_path,
     MinProjection &projection,
     size_t projection_start_index);
 
   bool judge_backward(
-    const Path<int> &right_most_path,
+    const std::vector<int> &right_most_path,
     const Graph &min_graph,
     History &history,
     dfs_code_t &min_dfs_code,
@@ -157,7 +156,7 @@ class GBolt {
     size_t projection_end_index);
 
   bool judge_forward(
-    const Path<int> &right_most_path,
+    const std::vector<int> &right_most_path,
     const Graph &min_graph,
     History &history,
     dfs_code_t &min_dfs_code,

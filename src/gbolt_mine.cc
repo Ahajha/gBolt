@@ -1,6 +1,5 @@
 #include <gbolt.h>
 #include <graph.h>
-#include <path.h>
 #include <common.h>
 #include <sstream>
 
@@ -129,8 +128,8 @@ void GBolt::mine_subgraph(
   prev_graph_id = output->size() - 1;
 
   // Find right most path
-  Path<int> *right_most_path = instance->right_most_path;
-  right_most_path->reset();
+  std::vector<int> *right_most_path = instance->right_most_path;
+  right_most_path->clear();
   build_right_most_path(dfs_codes, *right_most_path);
 
   // Enumerate backward paths and forward paths by different rules

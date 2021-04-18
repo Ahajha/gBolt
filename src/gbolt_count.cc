@@ -1,6 +1,5 @@
 #include <gbolt.h>
 #include <history.h>
-#include <path.h>
 #include <algorithm>
 
 
@@ -55,13 +54,13 @@ bool GBolt::is_min(const DfsCodes &dfs_codes) {
   DfsCodes *min_dfs_codes = instance->min_dfs_codes;
   History *history = instance->history;
   MinProjection *min_projection = instance->min_projection;
-  Path<int> *right_most_path = instance->right_most_path;
+  std::vector<int> *right_most_path = instance->right_most_path;
 
   // Clear cache data structures
   min_graph->clear();
   min_dfs_codes->clear();
-  min_projection->reset();
-  right_most_path->reset();
+  min_projection->clear();
+  right_most_path->clear();
   // Build min graph
   build_graph(dfs_codes, *min_graph);
 
@@ -82,7 +81,7 @@ bool GBolt::is_min(const DfsCodes &dfs_codes) {
         if (first_dfs_code || dfs_code_project_compare_(dfs_code, min_dfs_code)) {
           first_dfs_code = false;
           min_dfs_code = dfs_code;
-          min_projection->reset();
+          min_projection->clear();
         }
         if (dfs_code == min_dfs_code) {
           min_projection->resize(min_projection->size() + 1);
@@ -102,7 +101,7 @@ bool GBolt::is_min(const DfsCodes &dfs_codes) {
 }
 
 bool GBolt::judge_backward(
-  const Path<int> &right_most_path,
+  const std::vector<int> &right_most_path,
   const Graph &min_graph,
   History &history,
   dfs_code_t &min_dfs_code,
@@ -155,7 +154,7 @@ bool GBolt::judge_backward(
 }
 
 bool GBolt::judge_forward(
-  const Path<int> &right_most_path,
+  const std::vector<int> &right_most_path,
   const Graph &min_graph,
   History &history,
   dfs_code_t &min_dfs_code,
@@ -241,7 +240,7 @@ bool GBolt::is_projection_min(
   const Graph &min_graph,
   History &history,
   DfsCodes &min_dfs_codes,
-  Path<int> &right_most_path,
+  std::vector<int> &right_most_path,
   MinProjection &projection,
   size_t projection_start_index) {
   dfs_code_t min_dfs_code;

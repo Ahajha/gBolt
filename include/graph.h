@@ -2,7 +2,6 @@
 #define INCLUDE_GRAPH_H_
 
 #include <common.h>
-#include <path.h>
 #include <vector>
 
 namespace gbolt {
@@ -31,7 +30,7 @@ struct min_prev_dfs_t {
   const edge_t *edge;
   int prev;
 };
-typedef Path<min_prev_dfs_t> MinProjection;
+typedef std::vector<min_prev_dfs_t> MinProjection;
 
 // dfs projection links
 struct prev_dfs_t {
