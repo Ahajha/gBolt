@@ -15,19 +15,16 @@ void Database::read_input(const string &input_file, const string &separator) {
     LOG_ERROR("Open file error! %s", input_file.c_str());
   }
 
-  int num_line = 0;
   while (fin.getline(line, FILE_MAX_LINE)) {
-    char *pch = NULL;
-    pch = strtok(line, separator.c_str());
-    input_.resize(num_line + 1);
+    char *pch = strtok(line, separator.c_str());
+    input_.emplace_back();
     if (*pch == 't') {
       ++num_graph_;
     }
     while (pch != NULL) {
-      input_[num_line].emplace_back(pch);
+      input_.back().emplace_back(pch);
       pch = strtok(NULL, separator.c_str());
     }
-    ++num_line;
   }
 }
 
