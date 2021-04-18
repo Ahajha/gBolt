@@ -8,8 +8,6 @@ namespace gbolt {
 
 // Direct edge structure
 struct edge_t {
-  edge_t() : from(0), label(0), to(0), id(0) {}
-
   edge_t(int from, int label, int to, int id) :
     from(from), label(label), to(to), id(id) {}
 
@@ -112,8 +110,8 @@ struct dfs_code_forward_compare_t {
 };
 
 struct vertex_t {
-  vertex_t() : id(0), label(0), edges(0) {}
-  vertex_t(int id, int label) : id(id), label(label), edges(0) {}
+  vertex_t() : id(0), label(0) {}
+  vertex_t(int id, int label) : id(id), label(label) {}
 
   int id;
   int label;
@@ -123,7 +121,7 @@ typedef vector<vertex_t> Vertice;
 
 class Graph {
  public:
-  Graph() : id_(0), nedges_(0), vertice_(0) {}
+  Graph() : id_(0), nedges_(0) {}
 
   int size() const {
     return vertice_.size();
