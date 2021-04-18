@@ -64,20 +64,20 @@ void GBolt::report(const DfsCodes &dfs_codes, const Projection &projection,
   #else
   gbolt_instance_t *instance = gbolt_instances_ + omp_get_thread_num();
   #endif
-  Output *output = instance->output;
-  output->push_back(ss.str(), nsupport, output->size(), prev_thread_id, prev_graph_id);
+  Output& output = *(instance->output);
+  output.push_back(ss.str(), nsupport, output.size(), prev_thread_id, prev_graph_id);
 }
 
 void GBolt::save(bool output_parent, bool output_pattern, bool output_frequent_nodes) {
   #ifdef GBOLT_SERIAL
-  Output *output = gbolt_instances_->output;
-  output->save(output_parent, output_pattern);
+  Output& output = *(gbolt_instances_->output);
+  output.save(output_parent, output_pattern);
   #else
   #pragma omp parallel
   {
     gbolt_instance_t *instance = gbolt_instances_ + omp_get_thread_num();
-    Output *output = instance->output;
-    output->save(output_parent, output_pattern);
+    Output& output = *(instance->output);
+    output.save(output_parent, output_pattern);
   }
   #endif
   // Save output for frequent nodes
@@ -86,7 +86,7 @@ void GBolt::save(bool output_parent, bool output_pattern, bool output_frequent_n
     output_frequent_nodes_ = new Output(output_file_nodes);
 
     int graph_id = 0;
-    for (const auto kv_pair : frequent_vertex_labels_) {
+    for (const auto& kv_pair : frequent_vertex_labels_) {
       std::stringstream ss;
 
       ss << "v 0 " + std::to_string(kv_pair.first);

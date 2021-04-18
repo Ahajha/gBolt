@@ -16,16 +16,16 @@ void GBolt::enumerate(
   #else
   gbolt_instance_t *instance = gbolt_instances_ + omp_get_thread_num();
   #endif
-  History *history = instance->history;
+  History& history = *(instance->history);
   for (const auto& link : projection) {
     const Graph &graph = graphs[link.id];
-    history->build(link, graph);
+    history.build(link, graph);
 
-    get_backward(link, *history, graph, dfs_codes, right_most_path,
+    get_backward(link, history, graph, dfs_codes, right_most_path,
       projection_map_backward);
-    get_first_forward(link, *history, graph, dfs_codes, right_most_path,
+    get_first_forward(link, history, graph, dfs_codes, right_most_path,
       projection_map_forward);
-    get_other_forward(link, *history, graph, dfs_codes, right_most_path,
+    get_other_forward(link, history, graph, dfs_codes, right_most_path,
       projection_map_forward);
   }
 }

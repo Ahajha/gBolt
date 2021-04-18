@@ -56,51 +56,51 @@ bool GBolt::is_min(const DfsCodes &dfs_codes) {
   #else
   gbolt_instance_t *instance = gbolt_instances_ + omp_get_thread_num();
   #endif
-  Graph *min_graph = instance->min_graph;
-  DfsCodes *min_dfs_codes = instance->min_dfs_codes;
-  History *history = instance->history;
-  MinProjection *min_projection = instance->min_projection;
-  std::vector<int> *right_most_path = instance->right_most_path;
+  Graph& min_graph = *(instance->min_graph);
+  DfsCodes& min_dfs_codes = *(instance->min_dfs_codes);
+  History& history = *(instance->history);
+  MinProjection& min_projection = *(instance->min_projection);
+  std::vector<int>& right_most_path = *(instance->right_most_path);
 
   // Clear cache data structures
-  min_graph->clear();
-  min_dfs_codes->clear();
-  min_projection->clear();
-  right_most_path->clear();
+  min_graph.clear();
+  min_dfs_codes.clear();
+  min_projection.clear();
+  right_most_path.clear();
   // Build min graph
-  build_graph(dfs_codes, *min_graph);
+  build_graph(dfs_codes, min_graph);
 
   dfs_code_t min_dfs_code;
   bool first_dfs_code = true;
 
-  for (const auto& vertex : min_graph->get_vertice()) {
+  for (const auto& vertex : min_graph.get_vertice()) {
     Edges edges;
 
-    if (get_forward_init(vertex, *min_graph, edges)) {
+    if (get_forward_init(vertex, min_graph, edges)) {
       for (const auto& edge : edges) {
         // Push dfs code according to the same edge label
-        const vertex_t& vertex_from = min_graph->get_vertex(edge->from);
-        const vertex_t& vertex_to = min_graph->get_vertex(edge->to);
+        const vertex_t& vertex_from = min_graph.get_vertex(edge->from);
+        const vertex_t& vertex_to = min_graph.get_vertex(edge->to);
         dfs_code_t dfs_code(0, 1, vertex_from.label, edge->label, vertex_to.label);
         // Push back all the graphs
         if (first_dfs_code || dfs_code_project_compare_(dfs_code, min_dfs_code)) {
           first_dfs_code = false;
           min_dfs_code = dfs_code;
-          min_projection->clear();
+          min_projection.clear();
         }
         if (dfs_code == min_dfs_code) {
-          min_projection->emplace_back(edge, -1);
+          min_projection.emplace_back(edge, -1);
         }
       }
     }
   }
-  min_dfs_codes->push_back(&min_dfs_code);
+  min_dfs_codes.push_back(&min_dfs_code);
   if (*(dfs_codes[0]) != min_dfs_code) {
     return false;
   }
-  build_right_most_path(*min_dfs_codes, *right_most_path);
-  return is_projection_min(dfs_codes, *min_graph, *history,
-    *min_dfs_codes, *right_most_path, *min_projection, 0);
+  build_right_most_path(min_dfs_codes, right_most_path);
+  return is_projection_min(dfs_codes, min_graph, history,
+    min_dfs_codes, right_most_path, min_projection, 0);
 }
 
 bool GBolt::judge_backward(
