@@ -165,20 +165,12 @@ class Graph {
     return &vertice_;
   }
 
-  vertex_t get_vertex(int index) {
+  vertex_t& get_vertex(int index) {
     return vertice_[index];
   }
 
-  const vertex_t get_vertex(int index) const {
+  const vertex_t& get_vertex(int index) const {
     return vertice_[index];
-  }
-
-  vertex_t *get_p_vertex(int index) {
-    return &vertice_[index];
-  }
-
-  const vertex_t *get_p_vertex(int index) const {
-    return &vertice_[index];
   }
 
   void clear() {

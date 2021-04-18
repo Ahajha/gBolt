@@ -80,10 +80,10 @@ void GBolt::project(const vector<Graph> &graphs) {
 
       if (get_forward_init(vertex, graph, edges)) {
         for (const auto& edge : edges) {
-          const vertex_t *vertex_from = graph.get_p_vertex(edge->from);
-          const vertex_t *vertex_to = graph.get_p_vertex(edge->to);
+          const vertex_t& vertex_from = graph.get_vertex(edge->from);
+          const vertex_t& vertex_to = graph.get_vertex(edge->to);
           // Push dfs code according to the same edge label
-          dfs_code_t dfs_code(0, 1, vertex_from->label, edge->label, vertex_to->label);
+          dfs_code_t dfs_code(0, 1, vertex_from.label, edge->label, vertex_to.label);
           // Push all the graphs
           projection_map[dfs_code].emplace_back(graph.get_id(), edge, (const prev_dfs_t *)NULL);
         }
