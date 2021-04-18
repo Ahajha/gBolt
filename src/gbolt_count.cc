@@ -22,10 +22,16 @@ void GBolt::build_graph(const DfsCodes &dfs_codes, Graph &graph) {
   int edge_id = 0;
   Vertice *vertice = graph.get_p_vertice();
 
+  // New size is just large enough to ensure no extra vertices at the end.
+  std::size_t new_size = 0;
+  for (const auto edge : dfs_codes) {
+    // manually specify type for std::max to widen int to std::size_t
+    new_size = std::max<std::size_t>(std::max(edge->from, edge->to) + 1, vertice->size());
+  }
+  vertice->resize(new_size);
+
   for (const auto edge : dfs_codes) {
     // Push vertice
-    vertice->resize(std::max(edge->from + 1, static_cast<int>(vertice->size())));
-    vertice->resize(std::max(edge->to + 1, static_cast<int>(vertice->size())));
     (*vertice)[edge->from].label = edge->from_label;
     (*vertice)[edge->from].id = edge->from;
     (*vertice)[edge->to].label = edge->to_label;
