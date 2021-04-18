@@ -20,7 +20,7 @@ void Output::push_back(const string &str, int nsupport, int graph_id, int thread
 void Output::save(bool output_parent, bool output_pattern) {
   std::ofstream out(output_file_.c_str());
 
-  for (auto i = 0; i < buffer_.size(); ++i) {
+  for (std::size_t i = 0; i < buffer_.size(); ++i) {
     out << "t # " << graph_id_[i] << " * " << support_[i] << std::endl;
     if (output_parent == true) {
       if (parent_id_[i] == -1)

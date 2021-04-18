@@ -39,7 +39,7 @@ void Database::construct_graphs(vector<Graph> &graphs) {
   graphs.resize(num_graph_);
   Vertice *vertice = graphs[graph_index].get_p_vertice();
 
-  for (auto i = 0; i < input_.size(); ++i) {
+  for (std::size_t i = 0; i < input_.size(); ++i) {
     if (input_[i][0] == "t") {
       if (i != 0) {
         graphs[graph_index].set_nedges(edge_id);
@@ -90,7 +90,7 @@ void Database::construct_graphs(
   graphs.resize(num_graph_);
   Vertice *vertice = graphs[graph_index].get_p_vertice();
 
-  for (int i = 0; i < input_.size(); ++i) {
+  for (std::size_t i = 0; i < input_.size(); ++i) {
     if (input_[i][0] == "t") {
       if (i != 0) {
         graphs[graph_index].set_nedges(edge_id);

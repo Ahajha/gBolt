@@ -35,7 +35,7 @@
   do { \
     struct timeval cur; \
     gettimeofday(&cur, NULL); \
-    fprintf(stdout, "[%d:%d] ", cur.tv_sec, cur.tv_usec); \
+    fprintf(stdout, "[%li:%li] ", cur.tv_sec, cur.tv_usec); \
     fprintf(stdout, "INFO: "); \
     fprintf(stdout, __VA_ARGS__); \
     fprintf(stdout, "\n"); \
@@ -45,7 +45,7 @@
   do { \
     struct timeval cur; \
     gettimeofday(&cur, NULL); \
-    fprintf(stdout, "[%d:%d] ", cur.tv_sec, cur.tv_usec); \
+    fprintf(stdout, "[%li:%li] ", cur.tv_sec, cur.tv_usec); \
     fprintf(stderr, "ERROR: "); \
     fprintf(stderr, __VA_ARGS__); \
     fprintf(stderr, "\n"); \
@@ -55,7 +55,7 @@
   do { \
     struct timeval cur; \
     gettimeofday(&cur, NULL); \
-    fprintf(stdout, "[%f:%f] ", cur.tv_sec, cur.tv_usec); \
+    fprintf(stdout, "[%li:%li] ", cur.tv_sec, cur.tv_usec); \
     fprintf(stderr, "ERROR: "); \
     fprintf(stderr, __VA_ARGS__); \
     fprintf(stderr, "\n"); \
