@@ -83,9 +83,7 @@ bool GBolt::is_min(const DfsCodes &dfs_codes) {
           min_projection->clear();
         }
         if (dfs_code == min_dfs_code) {
-          min_projection->resize(min_projection->size() + 1);
-          min_projection->back().edge = edge;
-          min_projection->back().prev = -1;
+          min_projection->emplace_back(edge, -1);
         }
       }
     }
@@ -138,9 +136,7 @@ bool GBolt::judge_backward(
             projection.resize(projection_end_index);
           }
           if (dfs_code == min_dfs_code) {
-            projection.resize(projection.size() + 1);
-            projection.back().edge = &ln_edge;
-            projection.back().prev = j;
+            projection.emplace_back(&ln_edge, j);
           }
         }
       }
@@ -181,9 +177,7 @@ bool GBolt::judge_forward(
         projection.resize(projection_end_index);
       }
       if (dfs_code == min_dfs_code) {
-        projection.resize(projection.size() + 1);
-        projection.back().edge = &ln_edge;
-        projection.back().prev = i;
+        projection.emplace_back(&ln_edge, i);
       }
     }
   }
@@ -214,9 +208,7 @@ bool GBolt::judge_forward(
               projection.resize(projection_end_index);
             }
             if (dfs_code == min_dfs_code) {
-              projection.resize(projection.size() + 1);
-              projection.back().edge = &cn_edge;
-              projection.back().prev = j;
+              projection.emplace_back(&cn_edge, j);
             }
           }
         }
