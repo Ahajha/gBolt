@@ -9,11 +9,12 @@ namespace gbolt {
 
 void Database::read_input(const string &input_file, const string &separator) {
   std::ifstream fin(input_file);
-  char line[FILE_MAX_LINE];
 
   if (!fin.is_open()) {
     LOG_ERROR("Open file error! %s", input_file.c_str());
   }
+
+  char line[FILE_MAX_LINE];
 
   while (fin.getline(line, FILE_MAX_LINE)) {
     char *pch = strtok(line, separator.c_str());
@@ -21,51 +22,60 @@ void Database::read_input(const string &input_file, const string &separator) {
     // Empty line, just skip
     if (!pch) continue;
 
-    input_.emplace_back();
-    if (*pch == 't') {
-      ++num_graph_;
-    }
-    while (pch != NULL) {
-      input_.back().emplace_back(pch);
-      pch = strtok(NULL, separator.c_str());
+    // The original implementation did not do bounds checking, so it seems that
+    // having an incomplete line is UB. This may be fixed in the future.
+
+    // First character indicates the type of data
+    switch(*pch) {
+      case 't': {
+        // Discard the '#' character
+        strtok(nullptr, separator.c_str());
+        int id = atoi(strtok(nullptr, separator.c_str()));
+        input_graphs_.emplace_back(id);
+        break;
+      }
+      case 'v': {
+        int id = atoi(strtok(nullptr, separator.c_str()));
+        int label = atoi(strtok(nullptr, separator.c_str()));
+        input_graphs_.back().vertices.emplace_back(id, label);
+        break;
+      }
+      case 'e': {
+        int from = atoi(strtok(nullptr, separator.c_str()));
+        int to = atoi(strtok(nullptr, separator.c_str()));
+        int label = atoi(strtok(nullptr, separator.c_str()));
+        input_graphs_.back().edges.emplace_back(from, to, label);
+        break;
+      }
+      default:
+        LOG_ERROR("Reading input error!");
     }
   }
 }
 
 // Construct graph
 void Database::construct_graphs(vector<Graph> &graphs) {
-  int graph_index = 0;
-  int edge_id = 0;
-  graphs.resize(num_graph_);
-  Vertice *vertice = graphs[graph_index].get_p_vertice();
+  graphs.reserve(input_graphs_.size());
 
-  for (std::size_t i = 0; i < input_.size(); ++i) {
-    if (input_[i][0] == "t") {
-      if (i != 0) {
-        graphs[graph_index].set_nedges(edge_id);
-        vertice = graphs[++graph_index].get_p_vertice();
-        edge_id = 0;
-      }
-      graphs[graph_index].set_id(atoi(input_[i][2].c_str()));
-    } else if (input_[i][0] == "v") {
-      int id = atoi(input_[i][1].c_str());
-      int label = atoi(input_[i][2].c_str());
-      vertice->emplace_back(id, label);
-    } else if (input_[i][0] == "e") {
-      int from = atoi(input_[i][1].c_str());
-      int to = atoi(input_[i][2].c_str());
-      int label = atoi(input_[i][3].c_str());
-      // Add an edge
-      // Forward direction edge
-      (*vertice)[from].edges.emplace_back(from, label, to, edge_id);
-      // Backward direction edge
-      (*vertice)[to].edges.emplace_back(to, label, from, edge_id);
+  for (const auto& input_graph : input_graphs_) {
+    graphs.emplace_back();
+    graphs.back().set_id(input_graph.id);
+    graphs.back().set_nedges(static_cast<int>(input_graph.edges.size()));
+
+    auto& vertice = graphs.back().get_vertice();
+    vertice.reserve(input_graph.vertices.size());
+
+    for (const auto& vert : input_graph.vertices) {
+      vertice.emplace_back(vert.id, vert.label);
+    }
+
+    int edge_id = 0;
+    for (const auto& edge : input_graph.edges) {
+      vertice[edge.from].edges.emplace_back(edge.from, edge.label, edge.to, edge_id);
+      vertice[edge.to].edges.emplace_back(edge.to, edge.label, edge.from, edge_id);
       ++edge_id;
-    } else {
-      LOG_ERROR("Reading input error!");
     }
   }
-  graphs[graph_index].set_nedges(edge_id);
 }
 
 // Construct graph by labels
@@ -78,62 +88,38 @@ void Database::construct_graphs(
   const map<int, int> &frequent_edge_labels,
   #endif
   vector<Graph> &graphs) {
-  vector<int> labels;
-  #ifdef GBOLT_PERFORMANCE
-  unordered_map<int, int> id_map;
-  #else
-  map<int, int> id_map;
-  #endif
-  int graph_index = 0;
-  int edge_id = 0;
-  int vertex_id = 0;
-  graphs.resize(num_graph_);
-  Vertice *vertice = graphs[graph_index].get_p_vertice();
 
-  for (std::size_t i = 0; i < input_.size(); ++i) {
-    if (input_[i][0] == "t") {
-      if (i != 0) {
-        graphs[graph_index].set_nedges(edge_id);
-        vertice = graphs[++graph_index].get_p_vertice();
-        edge_id = 0;
-        vertex_id = 0;
-        labels.clear();
-        id_map.clear();
-      }
-      graphs[graph_index].set_id(atoi(input_[i][2].c_str()));
-    } else if (input_[i][0] == "v") {
-      int id = atoi(input_[i][1].c_str());
-      int label = atoi(input_[i][2].c_str());
-      labels.emplace_back(label);
-      // Find a node with frequent label
-      if (frequent_vertex_labels.find(label) != frequent_vertex_labels.end()) {
-        vertice->emplace_back(vertex_id, label);
-        id_map[id] = vertex_id;
-        ++vertex_id;
-      }
-    } else if (input_[i][0] == "e") {
-      int from = atoi(input_[i][1].c_str());
-      int to = atoi(input_[i][2].c_str());
-      int label = atoi(input_[i][3].c_str());
-      int label_from = labels[from];
-      int label_to = labels[to];
-      // Find an edge with frequent label
+  graphs.reserve(input_graphs_.size());
+
+  for (const auto& input_graph : input_graphs_) {
+    graphs.emplace_back();
+
+    auto& vertice = graphs.back().get_vertice();
+    vertice.reserve(input_graph.vertices.size());
+
+    int vertex_id = 0;
+    for (const auto& vert : input_graph.vertices) {
+      if (frequent_vertex_labels.find(vert.label)
+        != frequent_vertex_labels.end())
+      vertice.emplace_back(vertex_id++, vert.label);
+    }
+
+    int edge_id = 0;
+    for (const auto& edge : input_graph.edges) {
+      const int label_from = vertice[edge.from].label;
+      const int label_to = vertice[edge.to].label;
       if (frequent_vertex_labels.find(label_from) != frequent_vertex_labels.end() &&
         frequent_vertex_labels.find(label_to) != frequent_vertex_labels.end() &&
-        frequent_edge_labels.find(label) != frequent_edge_labels.end()) {
-        // First edge
-        (*vertice)[id_map[from]].edges.
-          emplace_back(id_map[from], label, id_map[to], edge_id);
-        // Second edge
-        (*vertice)[id_map[to]].edges.
-          emplace_back(id_map[to], label, id_map[from], edge_id);
+        frequent_edge_labels.find(edge.label) != frequent_edge_labels.end()) {
+        vertice[edge.from].edges.emplace_back(edge.from, edge.label, edge.to, edge_id);
+        vertice[edge.to].edges.emplace_back(edge.to, edge.label, edge.from, edge_id);
         ++edge_id;
       }
-    } else {
-      LOG_ERROR("Reading input error!");
     }
+
+    graphs.back().set_id(input_graph.id);
+    graphs.back().set_nedges(edge_id);
   }
-  graphs[graph_index].set_nedges(edge_id);
 }
 
 }  // namespace gbolt

@@ -41,8 +41,22 @@ class Database {
 
  private:
   static Database *instance_;
-  vector<vector<string> > input_;
-  int num_graph_ = 0;
+
+  struct input_vertex {
+    int id, label;
+    input_vertex(int i, int la) : id(i), label(la) {}
+  };
+  struct input_edge {
+    int from, to, label;
+    input_edge(int f, int t, int la) : from(f), to(t), label(la) {}
+  };
+  struct input_graph {
+    int id;
+    std::vector<input_vertex> vertices;
+    std::vector<input_edge> edges;
+    input_graph(int i) : id(i) {}
+  };
+  vector<input_graph> input_graphs_;
 };
 
 }  // namespace gbolt
