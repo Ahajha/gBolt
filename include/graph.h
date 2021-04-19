@@ -155,14 +155,6 @@ class Graph {
     return vertice_;
   }
 
-  Vertice *get_p_vertice() {
-    return &vertice_;
-  }
-
-  const Vertice *get_p_vertice() const {
-    return &vertice_;
-  }
-
   vertex_t& get_vertex(int index) {
     return vertice_[index];
   }
