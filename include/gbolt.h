@@ -40,12 +40,8 @@ class GBolt {
   void save(bool output_parent = false, bool output_pattern = false, bool output_frequent_nodes = false);
 
   ~GBolt() {
-    if (gbolt_instances_ != 0) {
-      delete[] gbolt_instances_;
-    }
-    if (output_frequent_nodes_ != 0) {
-      delete output_frequent_nodes_;
-    }
+    delete[] gbolt_instances_;
+    delete output_frequent_nodes_;
   }
 
  private:
