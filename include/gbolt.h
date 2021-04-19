@@ -5,6 +5,7 @@
 #include <graph.h>
 #include <history.h>
 #include <output.h>
+#include <database.h>
 #include <map>
 #include <vector>
 #include <string>
@@ -35,6 +36,8 @@ class GBolt {
     output_file_(output_file), support_(support),
     output_frequent_nodes_(0), gbolt_instances_(0) {}
 
+  void read_input(const string &input_file, const string &separator);
+
   void execute();
 
   void save(bool output_parent = false, bool output_pattern = false, bool output_frequent_nodes = false);
@@ -55,7 +58,7 @@ class GBolt {
 
   void project(const vector<Graph> &graphs);
 
-  void find_frequent_nodes_and_edges(const vector<Graph> &graphs);
+  void find_frequent_nodes_and_edges(const Database& db);
 
   void mine_subgraph(
     const vector<Graph> &graphs,

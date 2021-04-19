@@ -11,15 +11,8 @@ class Graph;
 
 class Database {
  public:
-  static Database *get_instance() {
-    return instance_;
-  }
-
   // Return graph count
   void read_input(const string &input_file, const string &separator);
-
-  // Construct graph
-  void construct_graphs(vector<Graph> &graphs);
 
   // Construct graph by frequent labels
   void construct_graphs(
@@ -31,16 +24,6 @@ class Database {
     const map<int, int> &frequent_edge_labels,
   #endif
     vector<Graph> &graphs);
-
-  ~Database() {
-    delete instance_;
-  }
-
- private:
-  Database() {}
-
- private:
-  static Database *instance_;
 
   struct input_vertex {
     int id, label;
@@ -56,6 +39,8 @@ class Database {
     std::vector<input_edge> edges;
     input_graph(int i) : id(i) {}
   };
+  const vector<input_graph>& get_graphs() const { return input_graphs_; }
+ private:
   vector<input_graph> input_graphs_;
 };
 

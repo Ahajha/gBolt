@@ -5,18 +5,19 @@
 
 namespace gbolt {
 
-void GBolt::find_frequent_nodes_and_edges(const vector<Graph> &graphs) {
+void GBolt::find_frequent_nodes_and_edges(const Database& db) {
   unordered_map<int, vector<int> > vertex_labels;
   unordered_map<int, int> edge_labels;
 
+  const auto& graphs = db.get_graphs();
   for (auto i = 0; i < graphs.size(); ++i) {
     unordered_set<int> vertex_set;
     unordered_set<int> edge_set;
-    for (const auto& vertex : graphs[i].get_vertice()) {
+    for (const auto& vertex : graphs[i].vertices) {
       vertex_set.insert(vertex.label);
-      for (const auto& edge : vertex.edges) {
-        edge_set.insert(edge.label);
-      }
+    }
+    for (const auto& edge : graphs[i].edges) {
+      edge_set.insert(edge.label);
     }
     for (auto label : vertex_set) {
       vertex_labels[label].emplace_back(i);

@@ -3,10 +3,6 @@
 #include <common.h>
 #include <cxxopts.hpp>
 
-// Initialize instance
-using gbolt::Database;
-Database *Database::instance_ = new Database();
-
 int main(int argc, char *argv[]) {
   cxxopts::Options options("gBolt", "very fast implementation for gSpan algorithm in data mining");
   options.add_options()
@@ -45,28 +41,21 @@ int main(int argc, char *argv[]) {
   if (support > 1.0 || support <= 0.0) {
     LOG_ERROR("Support value should be less than 1.0 and greater than 0.0");
   }
-  // Read input
-  #ifdef GBOLT_PERFORMANCE
-  struct timeval time_start, time_end;
-  double elapsed = 0.0;
-  CPU_TIMER_START(elapsed, time_start);
-  #endif
-  Database::get_instance()->read_input(input, mark);
-  #ifdef GBOLT_PERFORMANCE
-  CPU_TIMER_END(elapsed, time_start, time_end);
-  LOG_INFO("gbolt read input time: %f", elapsed);
-  CPU_TIMER_START(elapsed, time_start);
-  #endif
+
   // Construct algorithm
   gbolt::GBolt gbolt(output, support);
+
+  // Read input
+  gbolt.read_input(input, mark);
+
+  // Execute algorithm
   gbolt.execute();
-  #ifdef GBOLT_PERFORMANCE
-  CPU_TIMER_END(elapsed, time_start, time_end);
-  LOG_INFO("gbolt execute time: %f", elapsed);
-  #endif
+
   // Save results
   if (output.size() != 0) {
     #ifdef GBOLT_PERFORMANCE
+    struct timeval time_start, time_end;
+    double elapsed = 0.0;
     CPU_TIMER_START(elapsed, time_start);
     #endif
     gbolt.save(parents, dfs, nodes);

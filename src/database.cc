@@ -53,31 +53,6 @@ void Database::read_input(const string &input_file, const string &separator) {
   }
 }
 
-// Construct graph
-void Database::construct_graphs(vector<Graph> &graphs) {
-  graphs.reserve(input_graphs_.size());
-
-  for (const auto& input_graph : input_graphs_) {
-    graphs.emplace_back();
-    graphs.back().set_id(input_graph.id);
-    graphs.back().set_nedges(static_cast<int>(input_graph.edges.size()));
-
-    auto& vertice = graphs.back().get_vertice();
-    vertice.reserve(input_graph.vertices.size());
-
-    for (const auto& vert : input_graph.vertices) {
-      vertice.emplace_back(vert.id, vert.label);
-    }
-
-    int edge_id = 0;
-    for (const auto& edge : input_graph.edges) {
-      vertice[edge.from].edges.emplace_back(edge.from, edge.label, edge.to, edge_id);
-      vertice[edge.to].edges.emplace_back(edge.to, edge.label, edge.from, edge_id);
-      ++edge_id;
-    }
-  }
-}
-
 // Construct graph by labels
 void Database::construct_graphs(
   #ifdef GBOLT_PERFORMANCE

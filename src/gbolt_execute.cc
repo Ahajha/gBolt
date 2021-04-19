@@ -5,32 +5,47 @@
 
 namespace gbolt {
 
-void GBolt::execute() {
-  Database *database = Database::get_instance();
-  vector<Graph> graphs;
-  vector<Graph> prune_graphs;
-  // Phase 1: construct an initial graph
+void GBolt::read_input(const string &input_file, const string &separator) {
+  Database db;
+
   #ifdef GBOLT_PERFORMANCE
   struct timeval time_start, time_end;
   double elapsed = 0.0;
   CPU_TIMER_START(elapsed, time_start);
   #endif
-  database->construct_graphs(graphs);
-  nsupport_ = graphs.size() * support_;
-  // TODO: find frequent edges
-  find_frequent_nodes_and_edges(graphs);
 
-  // Phase 2: prune the initial graph by frequent labels
-  database->construct_graphs(frequent_vertex_labels_, frequent_edge_labels_, prune_graphs);
+  db.read_input(input_file, separator);
+
   #ifdef GBOLT_PERFORMANCE
   CPU_TIMER_END(elapsed, time_start, time_end);
-  LOG_INFO("gbolt construct graph time: %f", elapsed);
+  LOG_INFO("gbolt read input time: %f", elapsed);
   CPU_TIMER_START(elapsed, time_start);
   #endif
 
-  // Phase 3: graph mining
-  init_instances(prune_graphs);
-  project(prune_graphs);
+  nsupport_ = db.get_graphs().size() * support_;
+
+  find_frequent_nodes_and_edges(db);
+
+  // Prune the initial graph by frequent labels
+  db.construct_graphs(frequent_vertex_labels_, frequent_edge_labels_, graphs_);
+
+  #ifdef GBOLT_PERFORMANCE
+  CPU_TIMER_END(elapsed, time_start, time_end);
+  LOG_INFO("gbolt construct graph time: %f", elapsed);
+  #endif
+}
+
+void GBolt::execute() {
+  #ifdef GBOLT_PERFORMANCE
+  struct timeval time_start, time_end;
+  double elapsed = 0.0;
+  CPU_TIMER_START(elapsed, time_start);
+  #endif
+
+  // Graph mining
+  init_instances(graphs_);
+  project(graphs_);
+
   #ifdef GBOLT_PERFORMANCE
   CPU_TIMER_END(elapsed, time_start, time_end);
   LOG_INFO("gbolt mine graph time: %f", elapsed);
