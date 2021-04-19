@@ -90,7 +90,7 @@ void GBolt::save(bool output_parent, bool output_pattern, bool output_frequent_n
     for (const auto& kv_pair : frequent_vertex_labels_) {
       std::stringstream ss;
 
-      ss << "v 0 " + std::to_string(kv_pair.first);
+      ss << "v 0 " << kv_pair.first;
       ss << '\n';
       ss << "x: ";
       for (auto g_id : kv_pair.second) {
