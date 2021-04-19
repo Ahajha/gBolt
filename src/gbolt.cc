@@ -30,13 +30,13 @@ int main(int argc, char *argv[]) {
     return 0;
   }
 
-  std::string input = result["i"].count() ? result["i"].as<std::string>() : result["input"].as<std::string>();
-  std::string output = result["o"].count() ? result["o"].as<std::string>() : result["output"].as<std::string>();
-  double support = result["s"].count() ? result["s"].as<double>() : result["support"].as<double>();
-  std::string mark = result["m"].count() ? result["m"].as<std::string>() : result["mark"].as<std::string>();
-  bool parents = result["p"].count() ? result["p"].as<bool>() : result["parents"].as<bool>();
-  bool dfs = result["d"].count() ? result["d"].as<bool>() : result["dfs"].as<bool>();
-  bool nodes = result["n"].count() ? result["n"].as<bool>() : result["nodes"].as<bool>();
+  const std::string input = result["input"].as<std::string>();
+  const std::string output = result["output"].as<std::string>();
+  double support = result["support"].as<double>();
+  const std::string mark = result["mark"].as<std::string>();
+  bool parents = result["parents"].as<bool>();
+  bool dfs = result["dfs"].as<bool>();
+  bool nodes = result["nodes"].as<bool>();
 
   if (support > 1.0 || support <= 0.0) {
     LOG_ERROR("Support value should be less than 1.0 and greater than 0.0");
