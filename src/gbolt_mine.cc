@@ -105,7 +105,6 @@ void GBolt::save(bool output_parent, bool output_pattern, bool output_frequent_n
 }
 
 void GBolt::mine_subgraph(
-  const vector<Graph> &graphs,
   const Projection &projection,
   DfsCodes &dfs_codes,
   int prev_nsupport,
@@ -132,7 +131,7 @@ void GBolt::mine_subgraph(
   // Enumerate backward paths and forward paths by different rules
   ProjectionMapBackward projection_map_backward;
   ProjectionMapForward projection_map_forward;
-  enumerate(graphs, dfs_codes, projection, *right_most_path,
+  enumerate(dfs_codes, projection, *right_most_path,
     projection_map_backward, projection_map_forward);
   // Recursive mining: first backward, last backward, and then last forward to the first forward
   for (auto it = projection_map_backward.begin(); it != projection_map_backward.end(); ++it) {
@@ -143,14 +142,14 @@ void GBolt::mine_subgraph(
     }
     #ifdef GBOLT_SERIAL
     dfs_codes.emplace_back(&(it->first));
-    mine_subgraph(graphs, projection, dfs_codes, nsupport, prev_thread_id, prev_graph_id);
+    mine_subgraph(projection, dfs_codes, nsupport, prev_thread_id, prev_graph_id);
     dfs_codes.pop_back();
     #else
-    #pragma omp task shared(graphs, dfs_codes, projection, prev_thread_id, prev_graph_id) firstprivate(nsupport)
+    #pragma omp task shared(dfs_codes, projection, prev_thread_id, prev_graph_id) firstprivate(nsupport)
     {
       DfsCodes dfs_codes_copy(dfs_codes);
       dfs_codes_copy.emplace_back(&(it->first));
-      mine_subgraph(graphs, projection, dfs_codes_copy, nsupport, prev_thread_id, prev_graph_id);
+      mine_subgraph(projection, dfs_codes_copy, nsupport, prev_thread_id, prev_graph_id);
     }
     #endif
   }
@@ -162,14 +161,14 @@ void GBolt::mine_subgraph(
     }
     #ifdef GBOLT_SERIAL
     dfs_codes.emplace_back(&(it->first));
-    mine_subgraph(graphs, projection, dfs_codes, nsupport, prev_thread_id, prev_graph_id);
+    mine_subgraph(projection, dfs_codes, nsupport, prev_thread_id, prev_graph_id);
     dfs_codes.pop_back();
     #else
-    #pragma omp task shared(graphs, dfs_codes, projection, prev_thread_id, prev_graph_id) firstprivate(nsupport)
+    #pragma omp task shared(dfs_codes, projection, prev_thread_id, prev_graph_id) firstprivate(nsupport)
     {
       DfsCodes dfs_codes_copy(dfs_codes);
       dfs_codes_copy.emplace_back(&(it->first));
-      mine_subgraph(graphs, projection, dfs_codes_copy, nsupport, prev_thread_id, prev_graph_id);
+      mine_subgraph(projection, dfs_codes_copy, nsupport, prev_thread_id, prev_graph_id);
     }
     #endif
   }

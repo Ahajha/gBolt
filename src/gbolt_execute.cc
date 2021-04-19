@@ -43,8 +43,8 @@ void GBolt::execute() {
   #endif
 
   // Graph mining
-  init_instances(graphs_);
-  project(graphs_);
+  init_instances();
+  project();
 
   #ifdef GBOLT_PERFORMANCE
   CPU_TIMER_END(elapsed, time_start, time_end);
@@ -52,7 +52,7 @@ void GBolt::execute() {
   #endif
 }
 
-void GBolt::init_instances(const vector<Graph> &graphs) {
+void GBolt::init_instances() {
   #ifdef GBOLT_SERIAL
   int num_threads = 1;
   #else
@@ -63,7 +63,7 @@ void GBolt::init_instances(const vector<Graph> &graphs) {
   // Prepare history instance
   int max_edges = 0;
   int max_vertice = 0;
-  for (const auto& graph : graphs) {
+  for (const auto& graph : graphs_) {
     max_edges = std::max(graph.get_nedges(), max_edges);
     max_vertice = std::max(
       static_cast<int>(graph.size()), max_vertice);
@@ -84,11 +84,11 @@ void GBolt::init_instances(const vector<Graph> &graphs) {
   }
 }
 
-void GBolt::project(const vector<Graph> &graphs) {
+void GBolt::project() {
   ProjectionMap projection_map;
 
   // Construct the first edge
-  for (const auto& graph : graphs) {
+  for (const auto& graph : graphs_) {
 
     for (const auto& vertex : graph.get_vertice()) {
       Edges edges;
@@ -127,13 +127,13 @@ void GBolt::project(const vector<Graph> &graphs) {
       }
       #ifdef GBOLT_SERIAL
       dfs_codes.emplace_back(&(kv_pair.first));
-      mine_subgraph(graphs, projection, dfs_codes, nsupport, prev_thread_id, prev_graph_id);
+      mine_subgraph(projection, dfs_codes, nsupport, prev_thread_id, prev_graph_id);
       dfs_codes.pop_back();
       #else
-      #pragma omp task shared(graphs, projection, prev_thread_id, prev_graph_id) firstprivate(dfs_codes, nsupport)
+      #pragma omp task shared(projection, prev_thread_id, prev_graph_id) firstprivate(dfs_codes, nsupport)
       {
         dfs_codes.emplace_back(&(kv_pair.first));
-        mine_subgraph(graphs, projection, dfs_codes, nsupport, prev_thread_id, prev_graph_id);
+        mine_subgraph(projection, dfs_codes, nsupport, prev_thread_id, prev_graph_id);
       }
       #endif
     }

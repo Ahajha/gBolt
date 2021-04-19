@@ -5,7 +5,6 @@
 namespace gbolt {
 
 void GBolt::enumerate(
-  const vector<Graph> &graphs,
   const DfsCodes &dfs_codes,
   const Projection &projection,
   const std::vector<int> &right_most_path,
@@ -18,7 +17,7 @@ void GBolt::enumerate(
   #endif
   History& history = *(instance->history);
   for (const auto& link : projection) {
-    const Graph &graph = graphs[link.id];
+    const Graph &graph = graphs_[link.id];
     history.build(link, graph);
 
     get_backward(link, history, graph, dfs_codes, right_most_path,

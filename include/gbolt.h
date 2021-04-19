@@ -54,14 +54,13 @@ class GBolt {
 
  private:
   // Mine
-  void init_instances(const vector<Graph> &graphs);
+  void init_instances();
 
-  void project(const vector<Graph> &graphs);
+  void project();
 
   void find_frequent_nodes_and_edges(const Database& db);
 
   void mine_subgraph(
-    const vector<Graph> &graphs,
     const Projection &projection,
     DfsCodes &dfs_codes,
     int prev_nsupport,
@@ -92,7 +91,6 @@ class GBolt {
   }
 
   void enumerate(
-    const vector<Graph> &graphs,
     const DfsCodes &dfs_codes,
     const Projection &projection,
     const std::vector<int> &right_most_path,
