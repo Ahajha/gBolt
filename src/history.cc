@@ -1,6 +1,5 @@
 #include <history.h>
 #include <graph.h>
-#include <algorithm>
 #include <cstring>
 
 namespace gbolt {

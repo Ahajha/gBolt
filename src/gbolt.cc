@@ -1,5 +1,4 @@
 #include <gbolt.h>
-#include <database.h>
 #include <common.h>
 #include <cxxopts.hpp>
 

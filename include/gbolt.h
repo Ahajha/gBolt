@@ -5,12 +5,13 @@
 #include <graph.h>
 #include <history.h>
 #include <output.h>
-#include <database.h>
 #include <map>
 #include <vector>
 #include <string>
 
 namespace gbolt {
+
+class Database;
 
 struct gbolt_instance_t {
   Graph *min_graph = NULL;

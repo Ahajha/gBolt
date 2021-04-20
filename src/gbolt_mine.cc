@@ -2,6 +2,7 @@
 #include <graph.h>
 #include <common.h>
 #include <sstream>
+#include <database.h>
 
 namespace gbolt {
 
