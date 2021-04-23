@@ -132,3 +132,6 @@ build/*
 # Generated Doxygen files
 docs/html/*
 docs/latex/*
+
+# Perf files
+perf.*
