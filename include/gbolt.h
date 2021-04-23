@@ -69,10 +69,24 @@ class GBolt {
     int prev_graph_id);
 
   // Extend
+
+  /*!
+  Stores into right_most_path the rightmost path of the dfs code list. The
+  path is stored such that the first item in right_most_path is the index of
+  the edge 'discovering' the rightmost vertex, the second is the index of the
+  edge discovering the 'from' vertex of the first edge, and so on.
+  */
   void build_right_most_path(const DfsCodes &dfs_codes, std::vector<int> &right_most_path) {
     int prev_id = -1;
 
+    // Go in reverse, since we need to first look for the edge that discovered
+    // the rightmost vertex
     for (auto i = dfs_codes.size(); i > 0; --i) {
+      // Only consider forward edges (as by definition the rightmost path only
+      // consists of edges 'discovering' new nodes). The first forward edge (or
+      // equivalently, the last forward edge in dfs_codes) is the edge discovering
+      // the rightmost vertex. After that, each new edge is the edge discovering
+      // the 'from' of the previous one.
       if (dfs_codes[i - 1]->from < dfs_codes[i - 1]->to &&
         (right_most_path.empty() || prev_id == dfs_codes[i - 1]->to)) {
         prev_id = dfs_codes[i - 1]->from;
