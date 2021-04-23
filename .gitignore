@@ -128,3 +128,7 @@ sftp-config.json
 
 ### CMake ##
 build/*
+
+# Generated Doxygen files
+docs/html/*
+docs/latex/*
