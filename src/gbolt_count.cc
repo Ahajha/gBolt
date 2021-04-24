@@ -74,14 +74,15 @@ bool GBolt::is_min(const DfsCodes &dfs_codes) {
   bool first_dfs_code = true;
 
   for (const auto& vertex : min_graph.get_vertice()) {
-    Edges edges;
 
-    if (get_forward_init(vertex, min_graph, edges)) {
-      for (const auto& edge : edges) {
+    for (const auto& edge : vertex.edges) {
+      // Partial pruning: if the first label is greater than the
+      // second label, then there must be another graph whose second
+      // label is greater than the first label.
+      const int vertex_to_label = min_graph.get_vertex(edge.to).label;
+      if (vertex.label <= vertex_to_label) {
         // Push dfs code according to the same edge label
-        const vertex_t& vertex_from = min_graph.get_vertex(edge->from);
-        const vertex_t& vertex_to = min_graph.get_vertex(edge->to);
-        dfs_code_t dfs_code(0, 1, vertex_from.label, edge->label, vertex_to.label);
+        dfs_code_t dfs_code(0, 1, vertex.label, edge.label, vertex_to_label);
         // Push back all the graphs
         if (first_dfs_code || dfs_code_project_compare_(dfs_code, min_dfs_code)) {
           first_dfs_code = false;
@@ -89,7 +90,7 @@ bool GBolt::is_min(const DfsCodes &dfs_codes) {
           min_projection.clear();
         }
         if (dfs_code == min_dfs_code) {
-          min_projection.emplace_back(edge, -1);
+          min_projection.emplace_back(&edge, -1);
         }
       }
     }

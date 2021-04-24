@@ -112,11 +112,6 @@ class GBolt {
     ProjectionMapBackward &projection_map_backward,
     ProjectionMapForward &projection_map_forward);
 
-  bool get_forward_init(
-    const vertex_t &vertex,
-    const Graph &graph,
-    Edges &edges);
-
   void get_first_forward(
     const prev_dfs_t &prev_dfs,
     const History &history,

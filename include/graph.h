@@ -16,7 +16,6 @@ struct edge_t {
   int to;
   int id;
 };
-typedef vector<const edge_t *> Edges;
 
 // dfs projection links
 struct min_prev_dfs_t {

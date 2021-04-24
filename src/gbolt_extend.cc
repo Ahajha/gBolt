@@ -29,18 +29,6 @@ void GBolt::enumerate(
   }
 }
 
-bool GBolt::get_forward_init(const  vertex_t &vertex, const Graph &graph, Edges &edges) {
-  for (const auto& edge : vertex.edges) {
-    const vertex_t& next_vertex = graph.get_vertex(edge.to);
-    // Partial pruning: if the first label is greater than the second label, then there must be
-    // another graph whose second label is greater than the first label.
-    if (vertex.label <= next_vertex.label) {
-      edges.emplace_back(&edge);
-    }
-  }
-  return !edges.empty();
-}
-
 void GBolt::get_backward(
   const prev_dfs_t &prev_dfs,
   const History &history,

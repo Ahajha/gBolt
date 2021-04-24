@@ -91,16 +91,17 @@ void GBolt::project() {
   for (const auto& graph : graphs_) {
 
     for (const auto& vertex : graph.get_vertice()) {
-      Edges edges;
 
-      if (get_forward_init(vertex, graph, edges)) {
-        for (const auto& edge : edges) {
-          const vertex_t& vertex_from = graph.get_vertex(edge->from);
-          const vertex_t& vertex_to = graph.get_vertex(edge->to);
+      for (const auto& edge : vertex.edges) {
+        // Partial pruning: if the first label is greater than the
+        // second label, then there must be another graph whose second
+        // label is greater than the first label.
+        const int vertex_to_label = graph.get_vertex(edge.to).label;
+        if (vertex.label <= vertex_to_label) {
           // Push dfs code according to the same edge label
-          dfs_code_t dfs_code(0, 1, vertex_from.label, edge->label, vertex_to.label);
+          dfs_code_t dfs_code(0, 1, vertex.label, edge.label, vertex_to_label);
           // Push all the graphs
-          projection_map[dfs_code].emplace_back(graph.get_id(), edge, (const prev_dfs_t *)NULL);
+          projection_map[dfs_code].emplace_back(graph.get_id(), &edge, nullptr);
         }
       }
     }
