@@ -27,7 +27,7 @@ struct min_prev_dfs_t {
   const edge_t *edge;
   int prev;
 };
-typedef std::vector<min_prev_dfs_t> MinProjection;
+using MinProjection = std::vector<min_prev_dfs_t>;
 
 // dfs projection links
 struct prev_dfs_t {
@@ -40,7 +40,7 @@ struct prev_dfs_t {
   const edge_t *edge;
   const prev_dfs_t *prev;
 };
-typedef vector<prev_dfs_t> Projection;
+using Projection = vector<prev_dfs_t>;
 
 // dfs codes forward and backward compare
 struct dfs_code_t {
@@ -68,7 +68,7 @@ struct dfs_code_t {
   int edge_label;
   int to_label;
 };
-typedef vector<const dfs_code_t *> DfsCodes;
+using DfsCodes = vector<const dfs_code_t *>;
 
 struct dfs_code_project_compare_t {
   bool operator() (const dfs_code_t &first, const dfs_code_t &second) {
@@ -116,7 +116,7 @@ struct vertex_t {
   int label;
   vector<edge_t> edges;
 };
-typedef vector<vertex_t> Vertice;
+using Vertice = vector<vertex_t>;
 
 class Graph {
  public:

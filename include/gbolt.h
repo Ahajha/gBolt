@@ -49,9 +49,9 @@ class GBolt {
   }
 
  private:
-  typedef map<dfs_code_t, Projection, dfs_code_project_compare_t> ProjectionMap;
-  typedef map<dfs_code_t, Projection, dfs_code_backward_compare_t> ProjectionMapBackward;
-  typedef map<dfs_code_t, Projection, dfs_code_forward_compare_t> ProjectionMapForward;
+  using ProjectionMap = map<dfs_code_t, Projection, dfs_code_project_compare_t>;
+  using ProjectionMapBackward = map<dfs_code_t, Projection, dfs_code_backward_compare_t>;
+  using ProjectionMapForward = map<dfs_code_t, Projection, dfs_code_forward_compare_t>;
 
  private:
   // Mine

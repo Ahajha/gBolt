@@ -53,7 +53,7 @@ class History {
   }
 
  private:
-  typedef const edge_t * ConstEdgePointer;
+  using ConstEdgePointer = const edge_t *;
 
   // edges_ and edge_size_ effectively make up a vector. The claim
   // here seems to be that doing it this way saves memory in comparison
