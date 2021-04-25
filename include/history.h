@@ -14,12 +14,22 @@ class History {
     has_vertice_ = new bool[max_vertice + 1]();
   }
 
+  /*!
+  Clears the contents of this History, and refills the arrays
+  using start.
+  */
   void build(const prev_dfs_t &start, const Graph &graph);
 
+  /*!
+  Clears edges_ and has_edges_, refills them using start.
+  */
   void build_edges(const prev_dfs_t &start, const Graph &graph);
 
   void build_edges_min(const MinProjection &projection, const Graph &graph, int start);
 
+  /*!
+  Clears edges_ and has_vertice_, refills them using start.
+  */
   void build_vertice(const prev_dfs_t &start, const Graph &graph);
 
   void build_vertice_min(const MinProjection &projection, const Graph &graph, int start);
@@ -44,7 +54,14 @@ class History {
 
  private:
   typedef const edge_t * ConstEdgePointer;
+
+  // edges_ and edge_size_ effectively make up a vector. The claim
+  // here seems to be that doing it this way saves memory in comparison
+  // to push_back, though I have no idea how this is the case.
   ConstEdgePointer *edges_;
+
+  // has_edges_ and has_vertice_ at a given index is true if this history has been
+  // built with an object that has that given edge/vertex ID.
   bool *has_edges_;
   bool *has_vertice_;
   int edge_size_;
