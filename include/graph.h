@@ -29,17 +29,31 @@ struct min_prev_dfs_t {
 };
 using MinProjection = std::vector<min_prev_dfs_t>;
 
-// dfs projection links
+/*!
+A prev_dfs_t represents an instance of a subgraph being found within
+an input graph.
+*/
 struct prev_dfs_t {
   prev_dfs_t() : id(0), edge(NULL), prev(NULL) {}
 
   prev_dfs_t(int id, const edge_t *edge, const prev_dfs_t *prev) :
     id(id), edge(edge), prev(prev) {}
 
+  //! The ID of the graph the subgraph was found in.
   int id;
+
+  //! A pointer to the last edge in the DFS code representation of the subgraph.
   const edge_t *edge;
+
+  //! A pointer to the subgraph instance without the last edge.
   const prev_dfs_t *prev;
 };
+
+/*!
+A Projection represents a support list. Subgraphs are grouped by graph ID, such that
+if two prev_dfs_ts have the same ID, they are either adjacent or separated by other
+prev_dfs_ts with the same ID.
+*/
 using Projection = vector<prev_dfs_t>;
 
 // dfs codes forward and backward compare
