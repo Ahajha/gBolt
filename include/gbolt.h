@@ -14,12 +14,12 @@ namespace gbolt {
 class Database;
 
 struct gbolt_instance_t {
-  Graph *min_graph = NULL;
-  DfsCodes *min_dfs_codes = NULL;
-  History *history = NULL;
-  Output *output = NULL;
-  std::vector<int> *right_most_path = NULL;
-  MinProjection *min_projection = NULL;
+  Graph *min_graph = nullptr;
+  DfsCodes *min_dfs_codes = nullptr;
+  History *history = nullptr;
+  Output *output = nullptr;
+  std::vector<int> *right_most_path = nullptr;
+  MinProjection *min_projection = nullptr;
 
   ~gbolt_instance_t() {
     delete this->min_graph;
@@ -35,7 +35,7 @@ class GBolt {
  public:
   GBolt(const string &output_file, double support) :
     output_file_(output_file), support_(support),
-    output_frequent_nodes_(0), gbolt_instances_(0) {}
+    output_frequent_nodes_(nullptr), gbolt_instances_(nullptr) {}
 
   void read_input(const string &input_file, const string &separator);
 

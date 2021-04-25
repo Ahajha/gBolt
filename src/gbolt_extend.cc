@@ -55,7 +55,7 @@ void GBolt::get_backward(
         dfs_code_t dfs_code(from_id, to_id,
           last_node.label, ln_edge.label, from_node.label);
         projection_map_backward[dfs_code].
-          emplace_back(graph.id, &ln_edge, &(prev_dfs));
+          emplace_back(graph.id, &ln_edge, &prev_dfs);
       }
     }
   }

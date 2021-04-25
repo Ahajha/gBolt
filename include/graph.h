@@ -19,7 +19,7 @@ struct edge_t {
 
 // dfs projection links
 struct min_prev_dfs_t {
-  min_prev_dfs_t() : edge(NULL), prev(-1) {}
+  min_prev_dfs_t() : edge(nullptr), prev(-1) {}
 
   min_prev_dfs_t(const edge_t *edge, int prev) :
     edge(edge), prev(prev) {}
@@ -34,7 +34,7 @@ A prev_dfs_t represents an instance of a subgraph being found within
 an input graph.
 */
 struct prev_dfs_t {
-  prev_dfs_t() : id(0), edge(NULL), prev(NULL) {}
+  prev_dfs_t() : id(0), edge(nullptr), prev(nullptr) {}
 
   prev_dfs_t(int id, const edge_t *edge, const prev_dfs_t *prev) :
     id(id), edge(edge), prev(prev) {}
