@@ -20,7 +20,7 @@ int GBolt::count_support(const Projection &projection) {
 
 void GBolt::build_graph(const DfsCodes &dfs_codes, Graph &graph) {
   int edge_id = 0;
-  Vertice& vertice = graph.get_vertice();
+  Vertice& vertice = graph.vertice;
 
   // New size is just large enough to ensure no extra vertices at the end.
   std::size_t new_size = 0;
@@ -43,7 +43,7 @@ void GBolt::build_graph(const DfsCodes &dfs_codes, Graph &graph) {
       edge->to, edge->edge_label, edge->from, edge_id);
     ++edge_id;
   }
-  graph.set_nedges(edge_id);
+  graph.nedges = edge_id;
 }
 
 bool GBolt::is_min(const DfsCodes &dfs_codes) {
@@ -63,7 +63,7 @@ bool GBolt::is_min(const DfsCodes &dfs_codes) {
   std::vector<int>& right_most_path = *(instance->right_most_path);
 
   // Clear cache data structures
-  min_graph.clear();
+  min_graph.vertice.clear();
   min_dfs_codes.clear();
   min_projection.clear();
   right_most_path.clear();
@@ -73,13 +73,13 @@ bool GBolt::is_min(const DfsCodes &dfs_codes) {
   dfs_code_t min_dfs_code;
   bool first_dfs_code = true;
 
-  for (const auto& vertex : min_graph.get_vertice()) {
+  for (const auto& vertex : min_graph.vertice) {
 
     for (const auto& edge : vertex.edges) {
       // Partial pruning: if the first label is greater than the
       // second label, then there must be another graph whose second
       // label is greater than the first label.
-      const int vertex_to_label = min_graph.get_vertex(edge.to).label;
+      const int vertex_to_label = min_graph.vertice[edge.to].label;
       if (vertex.label <= vertex_to_label) {
         // Push dfs code according to the same edge label
         dfs_code_t dfs_code(0, 1, vertex.label, edge.label, vertex_to_label);
@@ -122,9 +122,9 @@ bool GBolt::judge_backward(
 
       const edge_t *edge = history.get_p_edge(right_most_path[i - 1]);
       const edge_t *last_edge = history.get_p_edge(right_most_path[0]);
-      const vertex_t& from_node = min_graph.get_vertex(edge->from);
-      const vertex_t& last_node = min_graph.get_vertex(last_edge->to);
-      const vertex_t& to_node = min_graph.get_vertex(edge->to);
+      const vertex_t& from_node = min_graph.vertice[edge->from];
+      const vertex_t& last_node = min_graph.vertice[last_edge->to];
+      const vertex_t& to_node = min_graph.vertice[edge->to];
 
       for (const auto& ln_edge : last_node.edges) {
         if (history.has_edges(ln_edge.id))
@@ -170,10 +170,10 @@ bool GBolt::judge_forward(
     history.build_vertice_min(projection, min_graph, i);
 
     const edge_t *last_edge = history.get_p_edge(right_most_path[0]);
-    const vertex_t& last_node = min_graph.get_vertex(last_edge->to);
+    const vertex_t& last_node = min_graph.vertice[last_edge->to];
 
     for (const auto& ln_edge : last_node.edges) {
-      const vertex_t& to_node = min_graph.get_vertex(ln_edge.to);
+      const vertex_t& to_node = min_graph.vertice[ln_edge.to];
       if (history.has_vertice(ln_edge.to) || to_node.label < min_label)
         continue;
       int to_id = min_dfs_codes[right_most_path[0]]->to;
@@ -195,11 +195,11 @@ bool GBolt::judge_forward(
         history.build_vertice_min(projection, min_graph, j);
 
         const edge_t *cur_edge = history.get_p_edge(i);
-        const vertex_t& cur_node = min_graph.get_vertex(cur_edge->from);
-        const vertex_t& cur_to = min_graph.get_vertex(cur_edge->to);
+        const vertex_t& cur_node = min_graph.vertice[cur_edge->from];
+        const vertex_t& cur_to = min_graph.vertice[cur_edge->to];
 
         for (const auto& cn_edge : cur_node.edges) {
-          const vertex_t& to_node = min_graph.get_vertex(cn_edge.to);
+          const vertex_t& to_node = min_graph.vertice[cn_edge.to];
           if (history.has_vertice(to_node.id) || cur_edge->to == to_node.id || to_node.label < min_label)
             continue;
           if (cur_edge->label < cn_edge.label ||

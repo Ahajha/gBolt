@@ -45,7 +45,7 @@ void GBolt::report(const DfsCodes &dfs_codes, const Projection &projection,
   Graph graph;
   build_graph(dfs_codes, graph);
 
-  for (const auto& vertex : graph.get_vertice()) {
+  for (const auto& vertex : graph.vertice) {
     ss << "v " << vertex.id << " " << vertex.label << '\n';
   }
   for (const auto edge : dfs_codes) {

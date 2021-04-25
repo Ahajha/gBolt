@@ -69,7 +69,7 @@ void Database::construct_graphs(
   for (const auto& input_graph : input_graphs_) {
     graphs.emplace_back();
 
-    auto& vertice = graphs.back().get_vertice();
+    auto& vertice = graphs.back().vertice;
     vertice.reserve(input_graph.vertices.size());
 
     int vertex_id = 0;
@@ -92,8 +92,8 @@ void Database::construct_graphs(
       }
     }
 
-    graphs.back().set_id(input_graph.id);
-    graphs.back().set_nedges(edge_id);
+    graphs.back().id = input_graph.id;
+    graphs.back().nedges = edge_id;
   }
 }
 

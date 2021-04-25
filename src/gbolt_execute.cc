@@ -64,9 +64,9 @@ void GBolt::init_instances() {
   int max_edges = 0;
   int max_vertice = 0;
   for (const auto& graph : graphs_) {
-    max_edges = std::max(graph.get_nedges(), max_edges);
+    max_edges = std::max(graph.nedges, max_edges);
     max_vertice = std::max(
-      static_cast<int>(graph.size()), max_vertice);
+      static_cast<int>(graph.vertice.size()), max_vertice);
   }
 
   // Init an instance for each thread
@@ -90,18 +90,18 @@ void GBolt::project() {
   // Construct the first edge
   for (const auto& graph : graphs_) {
 
-    for (const auto& vertex : graph.get_vertice()) {
+    for (const auto& vertex : graph.vertice) {
 
       for (const auto& edge : vertex.edges) {
         // Partial pruning: if the first label is greater than the
         // second label, then there must be another graph whose second
         // label is greater than the first label.
-        const int vertex_to_label = graph.get_vertex(edge.to).label;
+        const int vertex_to_label = graph.vertice[edge.to].label;
         if (vertex.label <= vertex_to_label) {
           // Push dfs code according to the same edge label
           dfs_code_t dfs_code(0, 1, vertex.label, edge.label, vertex_to_label);
           // Push all the graphs
-          projection_map[dfs_code].emplace_back(graph.get_id(), &edge, nullptr);
+          projection_map[dfs_code].emplace_back(graph.id, &edge, nullptr);
         }
       }
     }

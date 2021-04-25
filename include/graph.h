@@ -120,58 +120,11 @@ typedef vector<vertex_t> Vertice;
 
 class Graph {
  public:
-  Graph() : id_(0), nedges_(0) {}
+  Graph() : id(0), nedges(0) {}
 
-  int size() const {
-    return vertice_.size();
-  }
-
-  void resize(int s) {
-    vertice_.resize(s);
-  }
-
-  void set_id(int id) {
-    id_ = id;
-  }
-
-  int get_id() const {
-    return id_;
-  }
-
-  void set_nedges(int nedges) {
-    nedges_ = nedges;
-  }
-
-  int get_nedges() const {
-    return nedges_;
-  }
-
-  Vertice& get_vertice() {
-    return vertice_;
-  }
-
-  const Vertice& get_vertice() const {
-    return vertice_;
-  }
-
-  vertex_t& get_vertex(int index) {
-    return vertice_[index];
-  }
-
-  const vertex_t& get_vertex(int index) const {
-    return vertice_[index];
-  }
-
-  void clear() {
-    id_ = 0;
-    nedges_ = 0;
-    vertice_.clear();
-  }
-
- private:
-  int id_;
-  int nedges_;
-  Vertice vertice_;
+  int id;
+  int nedges;
+  Vertice vertice;
 };
 
 }  // namespace gbolt
