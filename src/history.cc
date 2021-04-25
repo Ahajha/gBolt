@@ -13,31 +13,27 @@ namespace gbolt {
 //   cur_dfs = cur_dfs->prev;
 // }
 void History::build(const prev_dfs_t &start, const Graph &graph) {
-  auto *cur_dfs = &start;
   memset(has_edges_, false, sizeof(bool) * graph.nedges + 1);
   memset(has_vertice_, false, sizeof(bool) * graph.vertice.size() + 1);
   edge_size_ = 0;
 
   // Reduce push back memory costs
-  while (cur_dfs != nullptr) {
+  for (auto *cur_dfs = &start; cur_dfs != nullptr; cur_dfs = cur_dfs->prev) {
     edges_[edge_size_++] = cur_dfs->edge;
     has_edges_[cur_dfs->edge->id] = true;
     has_vertice_[cur_dfs->edge->from] = true;
     has_vertice_[cur_dfs->edge->to] = true;
-    cur_dfs = cur_dfs->prev;
   }
 }
 
 void History::build_edges(const prev_dfs_t &start, const Graph &graph) {
-  auto *cur_dfs = &start;
   memset(has_edges_, false, sizeof(bool) * graph.nedges + 1);
   edge_size_ = 0;
 
   // Reduce push back memory costs
-  while (cur_dfs != nullptr) {
+  for (auto *cur_dfs = &start; cur_dfs != nullptr; cur_dfs = cur_dfs->prev) {
     edges_[edge_size_++] = cur_dfs->edge;
     has_edges_[cur_dfs->edge->id] = true;
-    cur_dfs = cur_dfs->prev;
   }
 }
 
@@ -55,16 +51,14 @@ void History::build_edges_min(const MinProjection &projection, const Graph &grap
 }
 
 void History::build_vertice(const prev_dfs_t &start, const Graph &graph) {
-  auto *cur_dfs = &start;
   memset(has_vertice_, false, sizeof(bool) * graph.vertice.size() + 1);
   edge_size_ = 0;
 
   // Reduce push back memory costs
-  while (cur_dfs != nullptr) {
+  for (auto *cur_dfs = &start; cur_dfs != nullptr; cur_dfs = cur_dfs->prev) {
     edges_[edge_size_++] = cur_dfs->edge;
     has_vertice_[cur_dfs->edge->from] = true;
     has_vertice_[cur_dfs->edge->to] = true;
-    cur_dfs = cur_dfs->prev;
   }
 }
 
