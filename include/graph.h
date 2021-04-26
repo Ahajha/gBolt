@@ -85,7 +85,7 @@ struct dfs_code_t {
 using DfsCodes = vector<const dfs_code_t *>;
 
 struct dfs_code_project_compare_t {
-  bool operator() (const dfs_code_t &first, const dfs_code_t &second) {
+  bool operator() (const dfs_code_t &first, const dfs_code_t &second) const {
     if (first.from_label != second.from_label) {
       return first.from_label < second.from_label;
     } else {
@@ -99,7 +99,7 @@ struct dfs_code_project_compare_t {
 };
 
 struct dfs_code_backward_compare_t {
-  bool operator() (const dfs_code_t &first, const dfs_code_t &second) {
+  bool operator() (const dfs_code_t &first, const dfs_code_t &second) const {
     if (first.to != second.to) {
       return first.to < second.to;
     } else {
@@ -109,7 +109,7 @@ struct dfs_code_backward_compare_t {
 };
 
 struct dfs_code_forward_compare_t {
-  bool operator() (const dfs_code_t &first, const dfs_code_t &second) {
+  bool operator() (const dfs_code_t &first, const dfs_code_t &second) const {
     if (first.from != second.from) {
       return first.from > second.from;
     } else {
