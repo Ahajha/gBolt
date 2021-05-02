@@ -85,7 +85,7 @@ void GBolt::save(bool output_parent, bool output_pattern, bool output_frequent_n
   // Save output for frequent nodes
   if (output_frequent_nodes) {
     string output_file_nodes = output_file_ + ".nodes";
-    output_frequent_nodes_ = new Output(output_file_nodes);
+    Output output_frequent_nodes_(output_file_nodes);
 
     int graph_id = 0;
     for (const auto& kv_pair : frequent_vertex_labels_) {
@@ -99,9 +99,9 @@ void GBolt::save(bool output_parent, bool output_pattern, bool output_frequent_n
       }
       ss << '\n';
 
-      output_frequent_nodes_->push_back(ss.str(), kv_pair.second.size(), graph_id++);
+      output_frequent_nodes_.push_back(ss.str(), kv_pair.second.size(), graph_id++);
     }
-    output_frequent_nodes_->save(false, true);
+    output_frequent_nodes_.save(false, true);
   }
 }
 

@@ -35,7 +35,7 @@ class GBolt {
  public:
   GBolt(const string &output_file, double support) :
     output_file_(output_file), support_(support),
-    output_frequent_nodes_(nullptr), gbolt_instances_(nullptr) {}
+    gbolt_instances_(nullptr) {}
 
   void read_input(const string &input_file, const string &separator);
 
@@ -45,7 +45,6 @@ class GBolt {
 
   ~GBolt() {
     delete[] gbolt_instances_;
-    delete output_frequent_nodes_;
   }
 
  private:
@@ -190,7 +189,6 @@ class GBolt {
   string output_file_;
   double support_;
   int nsupport_;
-  Output *output_frequent_nodes_;
   gbolt_instance_t *gbolt_instances_;
   dfs_code_project_compare_t dfs_code_project_compare_;
   dfs_code_forward_compare_t dfs_code_forward_compare_;
