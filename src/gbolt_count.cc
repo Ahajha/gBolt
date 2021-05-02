@@ -67,28 +67,35 @@ bool GBolt::is_min(const DfsCodes &dfs_codes) {
   min_dfs_codes.clear();
   min_projection.clear();
   right_most_path.clear();
+
   // Build min graph
   build_graph(dfs_codes, min_graph);
 
-  dfs_code_t min_dfs_code;
-  bool first_dfs_code = true;
+  // The first code in the sequence must be the
+  // smallest if the sequence itself is minimal.
+  dfs_code_t min_dfs_code = *(dfs_codes.front());
 
   for (const auto& vertex : min_graph.vertice) {
 
     for (const auto& edge : vertex.edges) {
+
       // Partial pruning: if the first label is greater than the
       // second label, then there must be another graph whose second
       // label is greater than the first label.
       const int vertex_to_label = min_graph.vertice[edge.to].label;
       if (vertex.label <= vertex_to_label) {
-        // Push dfs code according to the same edge label
+
+        // Hypothetical DFS code of this edge if it were the first edge in
+        // a code sequence
         dfs_code_t dfs_code(0, 1, vertex.label, edge.label, vertex_to_label);
-        // Push back all the graphs
-        if (first_dfs_code || dfs_code_project_compare_(dfs_code, min_dfs_code)) {
-          first_dfs_code = false;
-          min_dfs_code = dfs_code;
-          min_projection.clear();
+
+        // If this DFS code is smaller than the first code, the code sequence
+        // is not minimal.
+        if (dfs_code_project_compare_(dfs_code, min_dfs_code)) {
+          return false;
         }
+
+        // If the code is minimal, it is an instance of this code sequence.
         if (dfs_code == min_dfs_code) {
           min_projection.emplace_back(&edge, -1);
         }
@@ -96,9 +103,7 @@ bool GBolt::is_min(const DfsCodes &dfs_codes) {
     }
   }
   min_dfs_codes.push_back(&min_dfs_code);
-  if (*(dfs_codes[0]) != min_dfs_code) {
-    return false;
-  }
+
   build_right_most_path(min_dfs_codes, right_most_path);
   return is_projection_min(dfs_codes, min_graph, history,
     min_dfs_codes, right_most_path, min_projection, 0);
