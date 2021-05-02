@@ -125,18 +125,18 @@ bool GBolt::judge_backward(
     for (auto j = projection_start_index; j < projection_end_index; ++j) {
       history.build_edges_min(projection, min_graph, j);
 
-      const edge_t *edge = history.get_p_edge(right_most_path[i - 1]);
-      const edge_t *last_edge = history.get_p_edge(right_most_path[0]);
-      const vertex_t& from_node = min_graph.vertice[edge->from];
-      const vertex_t& last_node = min_graph.vertice[last_edge->to];
-      const vertex_t& to_node = min_graph.vertice[edge->to];
+      const edge_t& edge = history.get_edge(right_most_path[i - 1]);
+      const edge_t& last_edge = history.get_edge(right_most_path[0]);
+      const vertex_t& from_node = min_graph.vertice[edge.from];
+      const vertex_t& last_node = min_graph.vertice[last_edge.to];
+      const vertex_t& to_node = min_graph.vertice[edge.to];
 
       for (const auto& ln_edge : last_node.edges) {
         if (history.has_edges(ln_edge.id))
           continue;
-        if (ln_edge.to == edge->from &&
-            (ln_edge.label > edge->label ||
-             (ln_edge.label == edge->label &&
+        if (ln_edge.to == edge.from &&
+            (ln_edge.label > edge.label ||
+             (ln_edge.label == edge.label &&
               last_node.label >= to_node.label))) {
           int from_id = min_dfs_codes[right_most_path[0]]->to;
           int to_id = min_dfs_codes[right_most_path[i - 1]]->from;
@@ -174,8 +174,8 @@ bool GBolt::judge_forward(
   for (auto i = projection_start_index; i < projection_end_index; ++i) {
     history.build_vertice_min(projection, min_graph, i);
 
-    const edge_t *last_edge = history.get_p_edge(right_most_path[0]);
-    const vertex_t& last_node = min_graph.vertice[last_edge->to];
+    const edge_t& last_edge = history.get_edge(right_most_path[0]);
+    const vertex_t& last_node = min_graph.vertice[last_edge.to];
 
     for (const auto& ln_edge : last_node.edges) {
       const vertex_t& to_node = min_graph.vertice[ln_edge.to];
@@ -199,16 +199,16 @@ bool GBolt::judge_forward(
       for (auto j = projection_start_index; j < projection_end_index; ++j) {
         history.build_vertice_min(projection, min_graph, j);
 
-        const edge_t *cur_edge = history.get_p_edge(i);
-        const vertex_t& cur_node = min_graph.vertice[cur_edge->from];
-        const vertex_t& cur_to = min_graph.vertice[cur_edge->to];
+        const edge_t& cur_edge = history.get_edge(i);
+        const vertex_t& cur_node = min_graph.vertice[cur_edge.from];
+        const vertex_t& cur_to = min_graph.vertice[cur_edge.to];
 
         for (const auto& cn_edge : cur_node.edges) {
           const vertex_t& to_node = min_graph.vertice[cn_edge.to];
-          if (history.has_vertice(to_node.id) || cur_edge->to == to_node.id || to_node.label < min_label)
+          if (history.has_vertice(to_node.id) || cur_edge.to == to_node.id || to_node.label < min_label)
             continue;
-          if (cur_edge->label < cn_edge.label ||
-              (cur_edge->label == cn_edge.label &&
+          if (cur_edge.label < cn_edge.label ||
+              (cur_edge.label == cn_edge.label &&
                cur_to.label <= to_node.label)) {
             int from_id = min_dfs_codes[i]->from;
             int to_id = min_dfs_codes[right_most_path[0]]->to;

@@ -36,21 +36,21 @@ void GBolt::get_backward(
   const DfsCodes &dfs_codes,
   const std::vector<int> &right_most_path,
   ProjectionMapBackward &projection_map_backward) {
-  const edge_t *last_edge = history.get_p_edge(right_most_path[0]);
-  const vertex_t& last_node = graph.vertice[last_edge->to];
+  const edge_t& last_edge = history.get_edge(right_most_path[0]);
+  const vertex_t& last_node = graph.vertice[last_edge.to];
 
   const int from_id = dfs_codes[right_most_path[0]]->to;
   for (auto i = right_most_path.size() - 1; i > 0; --i) {
-    const edge_t *edge = history.get_p_edge(right_most_path[i]);
-    const int from_node_label = graph.vertice[edge->from].label;
-    const int to_node_label = graph.vertice[edge->to].label;
+    const edge_t& edge = history.get_edge(right_most_path[i]);
+    const int from_node_label = graph.vertice[edge.from].label;
+    const int to_node_label = graph.vertice[edge.to].label;
     const int to_id = dfs_codes[right_most_path[i]]->from;
     for (const auto& ln_edge : last_node.edges) {
       if (history.has_edges(ln_edge.id))
         continue;
-      if (ln_edge.to == edge->from &&
-          (ln_edge.label > edge->label ||
-           (ln_edge.label == edge->label &&
+      if (ln_edge.to == edge.from &&
+          (ln_edge.label > edge.label ||
+           (ln_edge.label == edge.label &&
             last_node.label >= to_node_label))) {
         dfs_code_t dfs_code(from_id, to_id,
           last_node.label, ln_edge.label, from_node_label);
@@ -68,8 +68,8 @@ void GBolt::get_first_forward(
   const DfsCodes &dfs_codes,
   const std::vector<int> &right_most_path,
   ProjectionMapForward &projection_map_forward) {
-  const edge_t *last_edge = history.get_p_edge(right_most_path[0]);
-  const vertex_t& last_node = graph.vertice[last_edge->to];
+  const edge_t& last_edge = history.get_edge(right_most_path[0]);
+  const vertex_t& last_node = graph.vertice[last_edge.to];
   const int min_label = dfs_codes[0]->from_label;
 
   for (const auto& ln_edge : last_node.edges) {
@@ -100,9 +100,9 @@ void GBolt::get_other_forward(
 
   const int to_id = dfs_codes[right_most_path[0]]->to;
   for (auto i : right_most_path) {
-    const edge_t *cur_edge = history.get_p_edge(i);
-    const vertex_t& cur_node = graph.vertice[cur_edge->from];
-    const vertex_t& cur_to = graph.vertice[cur_edge->to];
+    const edge_t& cur_edge = history.get_edge(i);
+    const vertex_t& cur_node = graph.vertice[cur_edge.from];
+    const vertex_t& cur_to = graph.vertice[cur_edge.to];
     const int from_id = dfs_codes[i]->from;
 
     for (const auto& cn_edge : cur_node.edges) {
@@ -112,8 +112,8 @@ void GBolt::get_other_forward(
       if (history.has_vertice(to_node.id) ||
         to_node.id == cur_to.id || to_node.label < min_label)
         continue;
-      if (cur_edge->label < cn_edge.label ||
-          (cur_edge->label == cn_edge.label &&
+      if (cur_edge.label < cn_edge.label ||
+          (cur_edge.label == cn_edge.label &&
            cur_to.label <= to_node.label)) {
         dfs_code_t dfs_code(from_id, to_id + 1, cur_node.label,
           cn_edge.label, to_node.label);

@@ -42,8 +42,8 @@ class History {
     return has_vertice_[index];
   }
 
-  const edge_t *get_p_edge(int index) const {
-    return edges_[edge_size_ - index - 1];
+  const edge_t& get_edge(int index) const {
+    return *(edges_[edge_size_ - index - 1]);
   }
 
   ~History() {
