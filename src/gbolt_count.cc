@@ -115,16 +115,17 @@ bool GBolt::judge_backward(
   size_t projection_end_index) {
   bool first_dfs_code = true;
 
-  // i > 1, because it cannot reach the path itself
-  for (auto i = right_most_path.size(); i > 1; --i) {
+  const edge_t& last_edge = history.get_edge(right_most_path[0]);
+  const vertex_t& last_node = min_graph.vertice[last_edge.to];
+  const int from_id = min_dfs_codes[right_most_path[0]]->to;
+  // i > 0, because it cannot reach the path itself
+  for (auto i = right_most_path.size() - 1; i > 0; --i) {
+    const edge_t& edge = history.get_edge(right_most_path[i]);
+    const vertex_t& from_node = min_graph.vertice[edge.from];
+    const vertex_t& to_node = min_graph.vertice[edge.to];
+    const int to_id = min_dfs_codes[right_most_path[i]]->from;
     for (auto j = projection_start_index; j < projection_end_index; ++j) {
       history.build_edges_min(projection, min_graph, j);
-
-      const edge_t& edge = history.get_edge(right_most_path[i - 1]);
-      const edge_t& last_edge = history.get_edge(right_most_path[0]);
-      const vertex_t& from_node = min_graph.vertice[edge.from];
-      const vertex_t& last_node = min_graph.vertice[last_edge.to];
-      const vertex_t& to_node = min_graph.vertice[edge.to];
 
       for (const auto& ln_edge : last_node.edges) {
         if (history.has_edges(ln_edge.id))
@@ -133,8 +134,6 @@ bool GBolt::judge_backward(
             (ln_edge.label > edge.label ||
              (ln_edge.label == edge.label &&
               last_node.label >= to_node.label))) {
-          int from_id = min_dfs_codes[right_most_path[0]]->to;
-          int to_id = min_dfs_codes[right_most_path[i - 1]]->from;
           dfs_code_t dfs_code(from_id, to_id,
             last_node.label, ln_edge.label, from_node.label);
           if (first_dfs_code || dfs_code_backward_compare_(dfs_code, min_dfs_code)) {
@@ -166,17 +165,17 @@ bool GBolt::judge_forward(
   int min_label = min_dfs_codes[0]->from_label;
   bool first_dfs_code = true;
 
+  const edge_t& last_edge = history.get_edge(right_most_path[0]);
+  const vertex_t& last_node = min_graph.vertice[last_edge.to];
+  const int to_id = min_dfs_codes[right_most_path[0]]->to;
+
   for (auto i = projection_start_index; i < projection_end_index; ++i) {
     history.build_vertice_min(projection, min_graph, i);
-
-    const edge_t& last_edge = history.get_edge(right_most_path[0]);
-    const vertex_t& last_node = min_graph.vertice[last_edge.to];
 
     for (const auto& ln_edge : last_node.edges) {
       const vertex_t& to_node = min_graph.vertice[ln_edge.to];
       if (history.has_vertice(ln_edge.to) || to_node.label < min_label)
         continue;
-      int to_id = min_dfs_codes[right_most_path[0]]->to;
       dfs_code_t dfs_code(to_id, to_id + 1, last_node.label, ln_edge.label, to_node.label);
       if (first_dfs_code || dfs_code_forward_compare_(dfs_code, min_dfs_code)) {
         first_dfs_code = false;
@@ -190,13 +189,15 @@ bool GBolt::judge_forward(
   }
 
   if (projection.size() == projection_end_index) {
+    const int to_id = min_dfs_codes[right_most_path[0]]->to;
     for (auto i : right_most_path) {
+      const edge_t& cur_edge = history.get_edge(i);
+      const vertex_t& cur_node = min_graph.vertice[cur_edge.from];
+      const vertex_t& cur_to = min_graph.vertice[cur_edge.to];
+      const int from_id = min_dfs_codes[i]->from;
+
       for (auto j = projection_start_index; j < projection_end_index; ++j) {
         history.build_vertice_min(projection, min_graph, j);
-
-        const edge_t& cur_edge = history.get_edge(i);
-        const vertex_t& cur_node = min_graph.vertice[cur_edge.from];
-        const vertex_t& cur_to = min_graph.vertice[cur_edge.to];
 
         for (const auto& cn_edge : cur_node.edges) {
           const vertex_t& to_node = min_graph.vertice[cn_edge.to];
@@ -205,8 +206,6 @@ bool GBolt::judge_forward(
           if (cur_edge.label < cn_edge.label ||
               (cur_edge.label == cn_edge.label &&
                cur_to.label <= to_node.label)) {
-            int from_id = min_dfs_codes[i]->from;
-            int to_id = min_dfs_codes[right_most_path[0]]->to;
             dfs_code_t dfs_code(from_id, to_id + 1,
               cur_node.label, cn_edge.label, to_node.label);
             if (first_dfs_code || dfs_code_forward_compare_(dfs_code, min_dfs_code)) {
@@ -221,7 +220,7 @@ bool GBolt::judge_forward(
         }
       }
       if (projection.size() > projection_end_index) {
-        break;
+        return true;
       }
     }
   }
