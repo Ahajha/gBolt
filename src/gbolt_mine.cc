@@ -136,45 +136,37 @@ void GBolt::mine_subgraph(
     projection_map_backward, projection_map_forward);
   // Recursive mining: first backward, last backward, and then last forward to the first forward
   for (auto it = projection_map_backward.begin(); it != projection_map_backward.end(); ++it) {
-    Projection &projection = it->second;
-    int nsupport = count_support(projection);
-    if (nsupport < nsupport_) {
-      continue;
-    }
-    #ifdef GBOLT_SERIAL
-    dfs_codes.emplace_back(&(it->first));
-    mine_subgraph(projection, dfs_codes, nsupport, prev_thread_id, prev_graph_id);
-    dfs_codes.pop_back();
-    #else
-    #pragma omp task shared(dfs_codes, projection, prev_thread_id, prev_graph_id) firstprivate(nsupport)
-    {
-      DfsCodes dfs_codes_copy(dfs_codes);
-      dfs_codes_copy.emplace_back(&(it->first));
-      mine_subgraph(projection, dfs_codes_copy, nsupport, prev_thread_id, prev_graph_id);
-    }
-    #endif
+    mine_child(it->second, &(it->first), dfs_codes, prev_thread_id, prev_graph_id);
   }
   for (auto it = projection_map_forward.rbegin(); it != projection_map_forward.rend(); ++it) {
-    Projection &projection = it->second;
-    int nsupport = count_support(projection);
-    if (nsupport < nsupport_) {
-      continue;
-    }
-    #ifdef GBOLT_SERIAL
-    dfs_codes.emplace_back(&(it->first));
-    mine_subgraph(projection, dfs_codes, nsupport, prev_thread_id, prev_graph_id);
-    dfs_codes.pop_back();
-    #else
-    #pragma omp task shared(dfs_codes, projection, prev_thread_id, prev_graph_id) firstprivate(nsupport)
-    {
-      DfsCodes dfs_codes_copy(dfs_codes);
-      dfs_codes_copy.emplace_back(&(it->first));
-      mine_subgraph(projection, dfs_codes_copy, nsupport, prev_thread_id, prev_graph_id);
-    }
-    #endif
+    mine_child(it->second, &(it->first), dfs_codes, prev_thread_id, prev_graph_id);
   }
   #ifndef GBOLT_SERIAL
   #pragma omp taskwait
+  #endif
+}
+
+void GBolt::mine_child(
+  const Projection &projection,
+  const dfs_code_t* next_code,
+  DfsCodes &dfs_codes,
+  int prev_thread_id,
+  int prev_graph_id) {
+  // Partial pruning, like apriori
+  const int nsupport = count_support(projection);
+  if (nsupport < nsupport_) {
+    return;
+  }
+  #ifdef GBOLT_SERIAL
+  dfs_codes.emplace_back(next_code);
+  mine_subgraph(projection, dfs_codes, nsupport, prev_thread_id, prev_graph_id);
+  dfs_codes.pop_back();
+  #else
+  #pragma omp task shared(projection, prev_thread_id, prev_graph_id, nsupport) firstprivate(dfs_codes)
+  {
+    dfs_codes.emplace_back(next_code);
+    mine_subgraph(projection, dfs_codes, nsupport, prev_thread_id, prev_graph_id);
+  }
   #endif
 }
 

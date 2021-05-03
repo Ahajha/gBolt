@@ -120,23 +120,7 @@ void GBolt::project() {
   #endif
   {
     for (const auto& kv_pair : projection_map) {
-      // Parital pruning, like apriori
-      const Projection &projection = kv_pair.second;
-      int nsupport = count_support(projection);
-      if (nsupport < nsupport_) {
-        continue;
-      }
-      #ifdef GBOLT_SERIAL
-      dfs_codes.emplace_back(&(kv_pair.first));
-      mine_subgraph(projection, dfs_codes, nsupport, prev_thread_id, prev_graph_id);
-      dfs_codes.pop_back();
-      #else
-      #pragma omp task shared(projection, prev_thread_id, prev_graph_id) firstprivate(dfs_codes, nsupport)
-      {
-        dfs_codes.emplace_back(&(kv_pair.first));
-        mine_subgraph(projection, dfs_codes, nsupport, prev_thread_id, prev_graph_id);
-      }
-      #endif
+      mine_child(kv_pair.second, &(kv_pair.first), dfs_codes, prev_thread_id, prev_graph_id);
     }
   }
   #ifndef GBOLT_SERIAL
