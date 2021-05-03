@@ -61,27 +61,20 @@ void GBolt::report(const DfsCodes &dfs_codes, const Projection &projection,
     }
   }
   ss << '\n';
-  #ifdef GBOLT_SERIAL
-  gbolt_instance_t *instance = gbolt_instances_;
-  #else
-  gbolt_instance_t *instance = gbolt_instances_ + omp_get_thread_num();
-  #endif
-  Output& output = *(instance->output);
+
+  Output& output = *(thread_instance().output);
   output.push_back(ss.str(), nsupport, output.size(), prev_thread_id, prev_graph_id);
 }
 
 void GBolt::save(bool output_parent, bool output_pattern, bool output_frequent_nodes) {
-  #ifdef GBOLT_SERIAL
-  Output& output = *(gbolt_instances_->output);
-  output.save(output_parent, output_pattern);
-  #else
+  Output& output = *(thread_instance().output);
+
+  #ifndef GBOLT_SERIAL
   #pragma omp parallel
+  #endif
   {
-    gbolt_instance_t *instance = gbolt_instances_ + omp_get_thread_num();
-    Output& output = *(instance->output);
     output.save(output_parent, output_pattern);
   }
-  #endif
   // Save output for frequent nodes
   if (output_frequent_nodes) {
     string output_file_nodes = output_file_ + ".nodes";
@@ -95,7 +88,7 @@ void GBolt::save(bool output_parent, bool output_pattern, bool output_frequent_n
       ss << '\n';
       ss << "x: ";
       for (auto g_id : kv_pair.second) {
-        ss << g_id << " ";
+        ss << g_id << ' ';
       }
       ss << '\n';
 
@@ -115,24 +108,21 @@ void GBolt::mine_subgraph(
     return;
   }
   report(dfs_codes, projection, prev_nsupport, prev_thread_id, prev_graph_id);
-  #ifdef GBOLT_SERIAL
-  prev_thread_id = 0;
-  #else
-  prev_thread_id = omp_get_thread_num();
-  #endif
-  gbolt_instance_t *instance = gbolt_instances_ + prev_thread_id;
-  Output *output = instance->output;
-  prev_graph_id = output->size() - 1;
+  prev_thread_id = thread_id();
+
+  gbolt_instance_t& instance = thread_instance();
+  Output& output = *(instance.output);
+  prev_graph_id = output.size() - 1;
 
   // Find right most path
-  std::vector<int> *right_most_path = instance->right_most_path;
-  right_most_path->clear();
-  build_right_most_path(dfs_codes, *right_most_path);
+  std::vector<int>& right_most_path = *(instance.right_most_path);
+  right_most_path.clear();
+  build_right_most_path(dfs_codes, right_most_path);
 
   // Enumerate backward paths and forward paths by different rules
   ProjectionMapBackward projection_map_backward;
   ProjectionMapForward projection_map_forward;
-  enumerate(dfs_codes, projection, *right_most_path,
+  enumerate(dfs_codes, projection, right_most_path,
     projection_map_backward, projection_map_forward);
   // Recursive mining: first backward, last backward, and then last forward to the first forward
   for (auto it = projection_map_backward.begin(); it != projection_map_backward.end(); ++it) {
@@ -157,17 +147,16 @@ void GBolt::mine_child(
   if (nsupport < nsupport_) {
     return;
   }
-  #ifdef GBOLT_SERIAL
-  dfs_codes.emplace_back(next_code);
-  mine_subgraph(projection, dfs_codes, nsupport, prev_thread_id, prev_graph_id);
-  dfs_codes.pop_back();
-  #else
+  #ifndef GBOLT_SERIAL
   #pragma omp task shared(projection, prev_thread_id, prev_graph_id, nsupport) firstprivate(dfs_codes)
+  #endif
   {
     dfs_codes.emplace_back(next_code);
     mine_subgraph(projection, dfs_codes, nsupport, prev_thread_id, prev_graph_id);
+    #ifdef GBOLT_SERIAL
+    dfs_codes.pop_back();
+    #endif
   }
-  #endif
 }
 
 }  // namespace gbolt

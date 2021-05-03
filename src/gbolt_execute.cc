@@ -108,11 +108,8 @@ void GBolt::project() {
   }
   // Mine subgraphs
   int prev_graph_id = -1;
-  #ifdef GBOLT_SERIAL
-  int prev_thread_id = 1;
-  #else
-  int prev_thread_id = omp_get_thread_num();
-  #endif
+  int prev_thread_id = thread_id();
+
   DfsCodes dfs_codes;
   #ifndef GBOLT_SERIAL
   #pragma omp parallel

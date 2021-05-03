@@ -23,12 +23,11 @@ void GBolt::build_graph(const DfsCodes &dfs_codes, Graph &graph) {
   Vertice& vertice = graph.vertice;
 
   // New size is just large enough to ensure no extra vertices at the end.
-  std::size_t new_size = 0;
+  int max_v_id = 0;
   for (const auto edge : dfs_codes) {
-    // manually specify type for std::max to widen int to std::size_t
-    new_size = std::max<std::size_t>(std::max(edge->from, edge->to) + 1, vertice.size());
+    max_v_id = std::max(edge->from, edge->to);
   }
-  vertice.resize(new_size);
+  vertice.resize(max_v_id + 1);
 
   for (const auto edge : dfs_codes) {
     // Push vertice
@@ -50,17 +49,13 @@ bool GBolt::is_min(const DfsCodes &dfs_codes) {
   if (dfs_codes.size() == 1)
     return true;
 
-  // Reuse memory, TODO: necessary or not? just set an index?
-  #ifdef GBOLT_SERIAL
-  gbolt_instance_t *instance = gbolt_instances_;
-  #else
-  gbolt_instance_t *instance = gbolt_instances_ + omp_get_thread_num();
-  #endif
-  Graph& min_graph = *(instance->min_graph);
-  DfsCodes& min_dfs_codes = *(instance->min_dfs_codes);
-  History& history = *(instance->history);
-  MinProjection& min_projection = *(instance->min_projection);
-  std::vector<int>& right_most_path = *(instance->right_most_path);
+  gbolt_instance_t& instance = thread_instance();
+
+  Graph& min_graph = *(instance.min_graph);
+  DfsCodes& min_dfs_codes = *(instance.min_dfs_codes);
+  History& history = *(instance.history);
+  MinProjection& min_projection = *(instance.min_projection);
+  std::vector<int>& right_most_path = *(instance.right_most_path);
 
   // Clear cache data structures
   min_graph.vertice.clear();
