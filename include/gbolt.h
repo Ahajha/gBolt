@@ -74,6 +74,20 @@ class GBolt {
     int prev_thread_id,
     int prev_graph_id);
 
+  #ifdef GBOLT_SERIAL
+  constexpr int thread_id() const { return 0; }
+  #else
+  int thread_id() const { return omp_get_thread_num(); }
+  #endif
+
+  gbolt_instance_t& thread_instance() {
+    #ifdef GBOLT_SERIAL
+    return *gbolt_instances_;
+    #else
+    return gbolt_instances_[omp_get_thread_num()];
+    #endif
+  }
+
   // Extend
 
   /*!
