@@ -46,10 +46,10 @@ void GBolt::report(const DfsCodes &dfs_codes, const Projection &projection,
   build_graph(dfs_codes, graph);
 
   for (const auto& vertex : graph.vertice) {
-    ss << "v " << vertex.id << ' ' << vertex.label << '\n';
+    ss << "v " << vertex.id << " " << vertex.label << '\n';
   }
   for (const auto edge : dfs_codes) {
-    ss << "e " << edge->from << ' ' << edge->to
+    ss << "e " << edge->from << " " << edge->to
       << " " << edge->edge_label << '\n';
   }
   ss << "x: ";
@@ -57,7 +57,7 @@ void GBolt::report(const DfsCodes &dfs_codes, const Projection &projection,
   for (std::size_t i = 0; i < projection.size(); ++i) {
     if (i == 0 || projection[i].id != prev) {
       prev = projection[i].id;
-      ss << prev << ' ';
+      ss << prev << " ";
     }
   }
   ss << '\n';
