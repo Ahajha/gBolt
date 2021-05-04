@@ -115,7 +115,7 @@ void GBolt::mine_subgraph(
   prev_graph_id = output.size() - 1;
 
   // Find right most path
-  std::vector<int>& right_most_path = *(instance.right_most_path);
+  std::vector<int>& right_most_path = instance.right_most_path;
   right_most_path.clear();
   build_right_most_path(dfs_codes, right_most_path);
 

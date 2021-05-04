@@ -14,20 +14,21 @@ namespace gbolt {
 class Database;
 
 struct gbolt_instance_t {
-  Graph *min_graph = nullptr;
-  DfsCodes *min_dfs_codes = nullptr;
+  Graph min_graph;
+  DfsCodes min_dfs_codes;
   History *history = nullptr;
   Output *output = nullptr;
-  std::vector<int> *right_most_path = nullptr;
-  MinProjection *min_projection = nullptr;
+  std::vector<int> right_most_path;
+  MinProjection min_projection;
+
+  gbolt_instance_t() {
+    right_most_path.reserve(DEFAULT_PATH_LEN);
+    min_projection.reserve(DEFAULT_PATH_LEN);
+  }
 
   ~gbolt_instance_t() {
-    delete this->min_graph;
-    delete this->min_dfs_codes;
     delete this->history;
     delete this->output;
-    delete this->right_most_path;
-    delete this->min_projection;
   }
 };
 

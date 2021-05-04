@@ -77,10 +77,6 @@ void GBolt::init_instances() {
     string output_file_thread = output_file_ + ".t" + std::to_string(i);
     gbolt_instances_[i].history = new History(max_edges, max_vertice);
     gbolt_instances_[i].output = new Output(output_file_thread);
-    gbolt_instances_[i].min_graph = new Graph();
-    gbolt_instances_[i].min_dfs_codes = new DfsCodes();
-    gbolt_instances_[i].right_most_path = new std::vector<int>(DEFAULT_PATH_LEN);
-    gbolt_instances_[i].min_projection = new MinProjection(DEFAULT_PATH_LEN);
   }
 }
 
