@@ -30,12 +30,13 @@ struct gbolt_instance_t {
   // Extend
 
   /*!
-  Stores into right_most_path the rightmost path of the dfs code list. The
-  path is stored such that the first item in right_most_path is the index of
-  the edge 'discovering' the rightmost vertex, the second is the index of the
-  edge discovering the 'from' vertex of the first edge, and so on.
+  Clears right_most_path, then stores into it the rightmost path of the dfs code
+  list. The path is stored such that the first item in right_most_path is the
+  index of the edge 'discovering' the rightmost vertex, the second is the index
+  of the edge discovering the 'from' vertex of the first edge, and so on.
   */
-  void build_right_most_path(const DfsCodes &dfs_codes) {
+  void update_right_most_path(const DfsCodes &dfs_codes) {
+    right_most_path.clear();
     int prev_id = -1;
 
     // Go in reverse, since we need to first look for the edge that discovered
@@ -52,16 +53,6 @@ struct gbolt_instance_t {
         right_most_path.push_back(i - 1);
       }
     }
-  }
-
-  void update_right_most_path(const DfsCodes &dfs_codes) {
-    auto *last_dfs_code = dfs_codes.back();
-    // filter out a simple case
-    if (last_dfs_code->from > last_dfs_code->to) {
-      return;
-    }
-    right_most_path.clear();
-    build_right_most_path(dfs_codes);
   }
 
   // Count

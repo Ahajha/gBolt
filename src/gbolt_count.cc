@@ -52,7 +52,6 @@ bool gbolt_instance_t::is_min(const DfsCodes &dfs_codes) {
   min_graph.vertice.clear();
   min_dfs_codes.clear();
   min_projection.clear();
-  right_most_path.clear();
 
   // Build min graph
   build_graph(dfs_codes, min_graph);
@@ -90,7 +89,7 @@ bool gbolt_instance_t::is_min(const DfsCodes &dfs_codes) {
   }
   min_dfs_codes.push_back(&min_dfs_code);
 
-  build_right_most_path(min_dfs_codes);
+  update_right_most_path(min_dfs_codes);
   return is_projection_min(dfs_codes, 0);
 }
 
@@ -222,7 +221,6 @@ bool gbolt_instance_t::is_projection_min(
       return false;
     }
     // Current dfs code is min
-    update_right_most_path(min_dfs_codes);
     return is_projection_min(dfs_codes, projection_end_index);
   }
 
@@ -233,6 +231,8 @@ bool gbolt_instance_t::is_projection_min(
       return false;
     }
     // Current dfs code is min
+    // Only update the rightmost path in this branch, as it will not change
+    // if the last added edge was backwards.
     update_right_most_path(min_dfs_codes);
     return is_projection_min(dfs_codes, projection_end_index);
   }

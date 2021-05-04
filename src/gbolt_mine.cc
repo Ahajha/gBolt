@@ -113,14 +113,12 @@ void GBolt::mine_subgraph(
   prev_graph_id = output.size() - 1;
 
   // Find right most path
-  std::vector<int>& right_most_path = instance.right_most_path;
-  right_most_path.clear();
-  instance.build_right_most_path(dfs_codes);
+  instance.update_right_most_path(dfs_codes);
 
   // Enumerate backward paths and forward paths by different rules
   ProjectionMapBackward projection_map_backward;
   ProjectionMapForward projection_map_forward;
-  enumerate(dfs_codes, projection, right_most_path,
+  enumerate(dfs_codes, projection, instance.right_most_path,
     projection_map_backward, projection_map_forward);
   // Recursive mining: first backward, last backward, and then last forward to the first forward
   for (auto it = projection_map_backward.begin(); it != projection_map_backward.end(); ++it) {
