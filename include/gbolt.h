@@ -56,6 +56,12 @@ struct gbolt_instance_t {
   }
 
   // Count
+
+  /*!
+  Returns true iff dfs_codes is a minimal DFS code sequence.
+  Side effects:
+  If is_min returns true, min_graph will be built using dfs_codes.
+  */
   bool is_min(const DfsCodes &dfs_codes);
 
   bool is_projection_min(
