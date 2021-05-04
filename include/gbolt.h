@@ -156,6 +156,7 @@ class GBolt {
   bool is_min(const DfsCodes &dfs_codes);
 
   bool is_projection_min(
+    gbolt_instance_t& instance,
     const DfsCodes &dfs_codes,
     const Graph &min_graph,
     History &history,
@@ -165,22 +166,14 @@ class GBolt {
     size_t projection_start_index);
 
   bool judge_backward(
-    const std::vector<int> &right_most_path,
-    const Graph &min_graph,
-    History &history,
+    gbolt_instance_t& instance,
     dfs_code_t &min_dfs_code,
-    const DfsCodes &min_dfs_codes,
-    MinProjection &projection,
     size_t projection_start_index,
     size_t projection_end_index);
 
   bool judge_forward(
-    const std::vector<int> &right_most_path,
-    const Graph &min_graph,
-    History &history,
+    gbolt_instance_t& instance,
     dfs_code_t &min_dfs_code,
-    const DfsCodes &min_dfs_codes,
-    MinProjection &projection,
     size_t projection_start_index,
     size_t projection_end_index);
 
