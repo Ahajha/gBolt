@@ -158,11 +158,6 @@ class GBolt {
   bool is_projection_min(
     gbolt_instance_t& instance,
     const DfsCodes &dfs_codes,
-    const Graph &min_graph,
-    History &history,
-    DfsCodes &min_dfs_codes,
-    std::vector<int> &right_most_path,
-    MinProjection &projection,
     size_t projection_start_index);
 
   bool judge_backward(
