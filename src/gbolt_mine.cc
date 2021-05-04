@@ -67,13 +67,11 @@ void GBolt::report(const DfsCodes &dfs_codes, const Projection &projection,
 }
 
 void GBolt::save(bool output_parent, bool output_pattern, bool output_frequent_nodes) {
-  Output& output = thread_instance().output;
-
   #ifndef GBOLT_SERIAL
   #pragma omp parallel
   #endif
   {
-    output.save(output_parent, output_pattern);
+    thread_instance().output.save(output_parent, output_pattern);
   }
   // Save output for frequent nodes
   if (output_frequent_nodes) {
