@@ -109,7 +109,7 @@ bool GBolt::judge_backward(
   const Graph &min_graph,
   History &history,
   dfs_code_t &min_dfs_code,
-  DfsCodes &min_dfs_codes,
+  const DfsCodes &min_dfs_codes,
   MinProjection &projection,
   size_t projection_start_index,
   size_t projection_end_index) {
@@ -159,7 +159,7 @@ bool GBolt::judge_forward(
   const Graph &min_graph,
   History &history,
   dfs_code_t &min_dfs_code,
-  DfsCodes &min_dfs_codes,
+  const DfsCodes &min_dfs_codes,
   MinProjection &projection,
   size_t projection_start_index,
   size_t projection_end_index) {
