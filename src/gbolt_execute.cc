@@ -58,7 +58,7 @@ void GBolt::init_instances() {
   #else
   int num_threads = omp_get_max_threads();
   #endif
-  gbolt_instances_ = new gbolt_instance_t[num_threads];
+  gbolt_instances_.reserve(num_threads);
 
   // Prepare history instance
   int max_edges = 0;
@@ -74,9 +74,10 @@ void GBolt::init_instances() {
     #ifdef GBOLT_PERFORMANCE
     LOG_INFO("gbolt create thread %d", i);
     #endif
+    gbolt_instances_.emplace_back();
     string output_file_thread = output_file_ + ".t" + std::to_string(i);
-    gbolt_instances_[i].history = new History(max_edges, max_vertice);
-    gbolt_instances_[i].output = new Output(output_file_thread);
+    gbolt_instances_.back().history = new History(max_edges, max_vertice);
+    gbolt_instances_.back().output = new Output(output_file_thread);
   }
 }
 

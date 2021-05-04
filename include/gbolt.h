@@ -35,18 +35,13 @@ struct gbolt_instance_t {
 class GBolt {
  public:
   GBolt(const string &output_file, double support) :
-    output_file_(output_file), support_(support),
-    gbolt_instances_(nullptr) {}
+    output_file_(output_file), support_(support) {}
 
   void read_input(const string &input_file, const string &separator);
 
   void execute();
 
   void save(bool output_parent = false, bool output_pattern = false, bool output_frequent_nodes = false);
-
-  ~GBolt() {
-    delete[] gbolt_instances_;
-  }
 
  private:
   using ProjectionMap = map<dfs_code_t, Projection, dfs_code_project_compare_t>;
@@ -83,7 +78,7 @@ class GBolt {
 
   gbolt_instance_t& thread_instance() {
     #ifdef GBOLT_SERIAL
-    return *gbolt_instances_;
+    return gbolt_instances_[0];
     #else
     return gbolt_instances_[omp_get_thread_num()];
     #endif
@@ -211,7 +206,7 @@ class GBolt {
   string output_file_;
   double support_;
   int nsupport_;
-  gbolt_instance_t *gbolt_instances_;
+  vector<gbolt_instance_t> gbolt_instances_;
   dfs_code_project_compare_t dfs_code_project_compare_;
   dfs_code_forward_compare_t dfs_code_forward_compare_;
   dfs_code_backward_compare_t dfs_code_backward_compare_;
