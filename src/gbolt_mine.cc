@@ -62,12 +62,12 @@ void GBolt::report(const DfsCodes &dfs_codes, const Projection &projection,
   }
   ss << '\n';
 
-  Output& output = *(thread_instance().output);
+  Output& output = thread_instance().output;
   output.push_back(ss.str(), nsupport, output.size(), prev_thread_id, prev_graph_id);
 }
 
 void GBolt::save(bool output_parent, bool output_pattern, bool output_frequent_nodes) {
-  Output& output = *(thread_instance().output);
+  Output& output = thread_instance().output;
 
   #ifndef GBOLT_SERIAL
   #pragma omp parallel
@@ -111,7 +111,7 @@ void GBolt::mine_subgraph(
   prev_thread_id = thread_id();
 
   gbolt_instance_t& instance = thread_instance();
-  Output& output = *(instance.output);
+  Output& output = instance.output;
   prev_graph_id = output.size() - 1;
 
   // Find right most path

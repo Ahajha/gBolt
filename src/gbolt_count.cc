@@ -53,7 +53,7 @@ bool GBolt::is_min(const DfsCodes &dfs_codes) {
 
   Graph& min_graph = instance.min_graph;
   DfsCodes& min_dfs_codes = instance.min_dfs_codes;
-  History& history = *(instance.history);
+  History& history = instance.history;
   MinProjection& min_projection = instance.min_projection;
   std::vector<int>& right_most_path = instance.right_most_path;
 

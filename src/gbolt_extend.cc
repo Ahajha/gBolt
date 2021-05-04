@@ -10,7 +10,7 @@ void GBolt::enumerate(
   const std::vector<int> &right_most_path,
   ProjectionMapBackward &projection_map_backward,
   ProjectionMapForward &projection_map_forward) {
-  History& history = *(thread_instance().history);
+  History& history = thread_instance().history;
   for (const auto& link : projection) {
     const Graph &graph = graphs_[link.id];
     history.build(link, graph);

@@ -16,19 +16,15 @@ class Database;
 struct gbolt_instance_t {
   Graph min_graph;
   DfsCodes min_dfs_codes;
-  History *history = nullptr;
-  Output *output = nullptr;
+  History history;
+  Output output;
   std::vector<int> right_most_path;
   MinProjection min_projection;
 
-  gbolt_instance_t() {
+  gbolt_instance_t(int max_edges, int max_vertice, const string& output_file_thread)
+    : history(max_edges, max_vertice), output(output_file_thread) {
     right_most_path.reserve(DEFAULT_PATH_LEN);
     min_projection.reserve(DEFAULT_PATH_LEN);
-  }
-
-  ~gbolt_instance_t() {
-    delete this->history;
-    delete this->output;
   }
 };
 
