@@ -80,6 +80,10 @@ struct gbolt_instance_t {
 
   // This isn't the best place to put this, but this is temporary.
   static void build_graph(const DfsCodes &dfs_codes, Graph& graph);
+
+  // Report
+  void report(const DfsCodes &dfs_codes, const Projection &projection,
+    int nsupport, int prev_thread_id, int prev_graph_id);
 };
 
 class GBolt {
@@ -169,10 +173,6 @@ class GBolt {
 
   // Count
   int count_support(const Projection &projection);
-
-  // Report
-  void report(const DfsCodes &dfs_codes, const Projection &projection,
-    int nsupport, int prev_thread_id, int prev_graph_id);
 
  private:
   // Graphs after reconstructing

@@ -39,30 +39,29 @@ void GBolt::find_frequent_nodes_and_edges(const Database& db) {
   }
 }
 
-void GBolt::report(const DfsCodes &dfs_codes, const Projection &projection,
-  int nsupport, int prev_thread_id, int prev_graph_id) {
+void gbolt_instance_t::report(const DfsCodes &dfs_codes,
+  const Projection &projection, int nsupport,
+  int prev_thread_id, int prev_graph_id) {
   std::stringstream ss;
-  Graph graph;
-  gbolt_instance_t::build_graph(dfs_codes, graph);
 
-  for (const auto& vertex : graph.vertice) {
-    ss << "v " << vertex.id << " " << vertex.label << '\n';
+  // Min_graph is guaranteed to be built already.
+  for (const auto& vertex : min_graph.vertice) {
+    ss << "v " << vertex.id << ' ' << vertex.label << '\n';
   }
   for (const auto edge : dfs_codes) {
-    ss << "e " << edge->from << " " << edge->to
-      << " " << edge->edge_label << '\n';
+    ss << "e " << edge->from << ' ' << edge->to
+      << ' ' << edge->edge_label << '\n';
   }
   ss << "x: ";
-  int prev = 0;
-  for (std::size_t i = 0; i < projection.size(); ++i) {
-    if (i == 0 || projection[i].id != prev) {
-      prev = projection[i].id;
-      ss << prev << " ";
+  int prev_id = 0;
+  for (const auto& link : projection) {
+    if (link.id != prev_id) {
+      prev_id = link.id;
+      ss << prev_id << ' ';
     }
   }
   ss << '\n';
 
-  Output& output = thread_instance().output;
   output.push_back(ss.str(), nsupport, output.size(), prev_thread_id, prev_graph_id);
 }
 
@@ -106,7 +105,7 @@ void GBolt::mine_subgraph(
   if (!instance.is_min(dfs_codes)) {
     return;
   }
-  report(dfs_codes, projection, prev_nsupport, prev_thread_id, prev_graph_id);
+  instance.report(dfs_codes, projection, prev_nsupport, prev_thread_id, prev_graph_id);
   prev_thread_id = thread_id();
 
   Output& output = instance.output;
