@@ -65,6 +65,8 @@ struct gbolt_instance_t {
   }
 
   // Count
+  bool is_min(const DfsCodes &dfs_codes);
+
   bool is_projection_min(
     const DfsCodes &dfs_codes,
     size_t projection_start_index);
@@ -78,6 +80,9 @@ struct gbolt_instance_t {
     dfs_code_t &min_dfs_code,
     size_t projection_start_index,
     size_t projection_end_index);
+
+  // This isn't the best place to put this, but this is temporary.
+  static void build_graph(const DfsCodes &dfs_codes, Graph& graph);
 };
 
 class GBolt {
@@ -167,10 +172,6 @@ class GBolt {
 
   // Count
   int count_support(const Projection &projection);
-
-  void build_graph(const DfsCodes &dfs_codes, Graph &graph);
-
-  bool is_min(const DfsCodes &dfs_codes);
 
   // Report
   void report(const DfsCodes &dfs_codes, const Projection &projection,

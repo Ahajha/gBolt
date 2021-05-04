@@ -17,7 +17,7 @@ int GBolt::count_support(const Projection &projection) {
   return size;
 }
 
-void GBolt::build_graph(const DfsCodes &dfs_codes, Graph &graph) {
+void gbolt_instance_t::build_graph(const DfsCodes &dfs_codes, Graph& graph) {
   int edge_id = 0;
   Vertice& vertice = graph.vertice;
 
@@ -44,17 +44,9 @@ void GBolt::build_graph(const DfsCodes &dfs_codes, Graph &graph) {
   graph.nedges = edge_id;
 }
 
-bool GBolt::is_min(const DfsCodes &dfs_codes) {
+bool gbolt_instance_t::is_min(const DfsCodes &dfs_codes) {
   if (dfs_codes.size() == 1)
     return true;
-
-  gbolt_instance_t& instance = thread_instance();
-
-  Graph& min_graph = instance.min_graph;
-  DfsCodes& min_dfs_codes = instance.min_dfs_codes;
-  History& history = instance.history;
-  MinProjection& min_projection = instance.min_projection;
-  std::vector<int>& right_most_path = instance.right_most_path;
 
   // Clear cache data structures
   min_graph.vertice.clear();
@@ -85,7 +77,7 @@ bool GBolt::is_min(const DfsCodes &dfs_codes) {
 
         // If this DFS code is smaller than the first code, the code sequence
         // is not minimal.
-        if (dfs_code_project_compare_(dfs_code, min_dfs_code)) {
+        if (dfs_code_project_compare_t{}(dfs_code, min_dfs_code)) {
           return false;
         }
 
@@ -98,8 +90,8 @@ bool GBolt::is_min(const DfsCodes &dfs_codes) {
   }
   min_dfs_codes.push_back(&min_dfs_code);
 
-  instance.build_right_most_path(min_dfs_codes);
-  return instance.is_projection_min(dfs_codes, 0);
+  build_right_most_path(min_dfs_codes);
+  return is_projection_min(dfs_codes, 0);
 }
 
 bool gbolt_instance_t::judge_backward(
