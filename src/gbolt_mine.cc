@@ -117,7 +117,7 @@ void GBolt::mine_subgraph(
   // Find right most path
   std::vector<int>& right_most_path = instance.right_most_path;
   right_most_path.clear();
-  build_right_most_path(dfs_codes, right_most_path);
+  instance.build_right_most_path(dfs_codes);
 
   // Enumerate backward paths and forward paths by different rules
   ProjectionMapBackward projection_map_backward;

@@ -26,6 +26,58 @@ struct gbolt_instance_t {
     right_most_path.reserve(DEFAULT_PATH_LEN);
     min_projection.reserve(DEFAULT_PATH_LEN);
   }
+
+  // Extend
+
+  /*!
+  Stores into right_most_path the rightmost path of the dfs code list. The
+  path is stored such that the first item in right_most_path is the index of
+  the edge 'discovering' the rightmost vertex, the second is the index of the
+  edge discovering the 'from' vertex of the first edge, and so on.
+  */
+  void build_right_most_path(const DfsCodes &dfs_codes) {
+    int prev_id = -1;
+
+    // Go in reverse, since we need to first look for the edge that discovered
+    // the rightmost vertex
+    for (auto i = dfs_codes.size(); i > 0; --i) {
+      // Only consider forward edges (as by definition the rightmost path only
+      // consists of edges 'discovering' new nodes). The first forward edge (or
+      // equivalently, the last forward edge in dfs_codes) is the edge discovering
+      // the rightmost vertex. After that, each new edge is the edge discovering
+      // the 'from' of the previous one.
+      if (dfs_codes[i - 1]->from < dfs_codes[i - 1]->to &&
+        (right_most_path.empty() || prev_id == dfs_codes[i - 1]->to)) {
+        prev_id = dfs_codes[i - 1]->from;
+        right_most_path.push_back(i - 1);
+      }
+    }
+  }
+
+  void update_right_most_path(const DfsCodes &dfs_codes) {
+    auto *last_dfs_code = dfs_codes.back();
+    // filter out a simple case
+    if (last_dfs_code->from > last_dfs_code->to) {
+      return;
+    }
+    right_most_path.clear();
+    build_right_most_path(dfs_codes);
+  }
+
+  // Count
+  bool is_projection_min(
+    const DfsCodes &dfs_codes,
+    size_t projection_start_index);
+
+  bool judge_backward(
+    dfs_code_t &min_dfs_code,
+    size_t projection_start_index,
+    size_t projection_end_index);
+
+  bool judge_forward(
+    dfs_code_t &min_dfs_code,
+    size_t projection_start_index,
+    size_t projection_end_index);
 };
 
 class GBolt {
@@ -82,41 +134,6 @@ class GBolt {
 
   // Extend
 
-  /*!
-  Stores into right_most_path the rightmost path of the dfs code list. The
-  path is stored such that the first item in right_most_path is the index of
-  the edge 'discovering' the rightmost vertex, the second is the index of the
-  edge discovering the 'from' vertex of the first edge, and so on.
-  */
-  void build_right_most_path(const DfsCodes &dfs_codes, std::vector<int> &right_most_path) {
-    int prev_id = -1;
-
-    // Go in reverse, since we need to first look for the edge that discovered
-    // the rightmost vertex
-    for (auto i = dfs_codes.size(); i > 0; --i) {
-      // Only consider forward edges (as by definition the rightmost path only
-      // consists of edges 'discovering' new nodes). The first forward edge (or
-      // equivalently, the last forward edge in dfs_codes) is the edge discovering
-      // the rightmost vertex. After that, each new edge is the edge discovering
-      // the 'from' of the previous one.
-      if (dfs_codes[i - 1]->from < dfs_codes[i - 1]->to &&
-        (right_most_path.empty() || prev_id == dfs_codes[i - 1]->to)) {
-        prev_id = dfs_codes[i - 1]->from;
-        right_most_path.push_back(i - 1);
-      }
-    }
-  }
-
-  void update_right_most_path(const DfsCodes &dfs_codes, std::vector<int> &right_most_path) {
-    auto *last_dfs_code = dfs_codes.back();
-    // filter out a simple case
-    if (last_dfs_code->from > last_dfs_code->to) {
-      return;
-    }
-    right_most_path.clear();
-    build_right_most_path(dfs_codes, right_most_path);
-  }
-
   void enumerate(
     const DfsCodes &dfs_codes,
     const Projection &projection,
@@ -154,23 +171,6 @@ class GBolt {
   void build_graph(const DfsCodes &dfs_codes, Graph &graph);
 
   bool is_min(const DfsCodes &dfs_codes);
-
-  bool is_projection_min(
-    gbolt_instance_t& instance,
-    const DfsCodes &dfs_codes,
-    size_t projection_start_index);
-
-  bool judge_backward(
-    gbolt_instance_t& instance,
-    dfs_code_t &min_dfs_code,
-    size_t projection_start_index,
-    size_t projection_end_index);
-
-  bool judge_forward(
-    gbolt_instance_t& instance,
-    dfs_code_t &min_dfs_code,
-    size_t projection_start_index,
-    size_t projection_end_index);
 
   // Report
   void report(const DfsCodes &dfs_codes, const Projection &projection,
