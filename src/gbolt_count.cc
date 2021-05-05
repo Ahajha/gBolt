@@ -98,12 +98,12 @@ bool gbolt_instance_t::judge_backward(
   size_t projection_end_index) {
   bool first_dfs_code = true;
 
-  // i > 1, because it cannot reach the path itself
-  for (auto i = right_most_path.size(); i > 1; --i) {
+  // i > 0, because a backward edge cannot go to the last vertex.
+  for (auto i = right_most_path.size() - 1; i > 0; --i) {
     for (auto j = projection_start_index; j < projection_end_index; ++j) {
       history.build_edges_min(min_projection, min_graph, j);
 
-      const edge_t& edge = history.get_edge(right_most_path[i - 1]);
+      const edge_t& edge = history.get_edge(right_most_path[i]);
       const edge_t& last_edge = history.get_edge(right_most_path[0]);
       const vertex_t& from_node = min_graph.vertice[edge.from];
       const vertex_t& last_node = min_graph.vertice[last_edge.to];
@@ -117,7 +117,7 @@ bool gbolt_instance_t::judge_backward(
              (ln_edge.label == edge.label &&
               last_node.label >= to_node.label))) {
           int from_id = dfs_codes[right_most_path[0]]->to;
-          int to_id = dfs_codes[right_most_path[i - 1]]->from;
+          int to_id = dfs_codes[right_most_path[i]]->from;
           dfs_code_t dfs_code(from_id, to_id,
             last_node.label, ln_edge.label, from_node.label);
           if (first_dfs_code || dfs_code_backward_compare_t{}(dfs_code, min_dfs_code)) {
