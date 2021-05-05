@@ -54,7 +54,6 @@ bool gbolt_instance_t::is_min(const DfsCodes &dfs_codes) {
   if (dfs_codes.size() == 1)
     return true;
 
-  min_dfs_codes.clear();
   min_projection.clear();
 
   // The first code in the sequence must be the
@@ -88,7 +87,6 @@ bool gbolt_instance_t::is_min(const DfsCodes &dfs_codes) {
       }
     }
   }
-  min_dfs_codes.push_back(&min_dfs_code);
 
   update_right_most_path(dfs_codes, 1);
   return is_projection_min(dfs_codes);
@@ -213,29 +211,27 @@ bool gbolt_instance_t::judge_forward(
 bool gbolt_instance_t::is_projection_min(const DfsCodes &dfs_codes) {
   size_t projection_start_index = 0;
 
-  for (const dfs_code_t *code : dfs_codes) {
+  // Start at index 1, index 0 has already been validated.
+  for (size_t i = 1; i < dfs_codes.size(); ++i) {
+    const dfs_code_t& code_to_validate = *(dfs_codes[i]);
     dfs_code_t min_dfs_code;
     size_t projection_end_index = min_projection.size();
 
     if (judge_backward(dfs_codes, min_dfs_code, projection_start_index, projection_end_index)) {
-      min_dfs_codes.emplace_back(&min_dfs_code);
-      // Dfs code not equals to min dfs code
-      if (*(dfs_codes[min_dfs_codes.size() - 1]) != min_dfs_code) {
+      // Code is not minimal
+      if (code_to_validate != min_dfs_code) {
         return false;
       }
-      // Current dfs code is min
+      // Backward edge validated, does not affect the rightmost path.
     }
 
     else if (judge_forward(dfs_codes, min_dfs_code, projection_start_index, projection_end_index)) {
-      min_dfs_codes.emplace_back(&min_dfs_code);
-      // Dfs code not equals to min dfs code
-      if (*(dfs_codes[min_dfs_codes.size() - 1]) != min_dfs_code) {
+      // Code is not minimal
+      if (code_to_validate != min_dfs_code) {
         return false;
       }
-      // Current dfs code is min
-      // Only update the rightmost path in this branch, as it will not change
-      // if the last added edge was backwards.
-      update_right_most_path(dfs_codes, min_dfs_codes.size());
+      // Forward edge was validated, so update the rightmost path.
+      update_right_most_path(dfs_codes, i + 1);
     }
 
     projection_start_index = projection_end_index;

@@ -15,7 +15,6 @@ class Database;
 
 struct gbolt_instance_t {
   Graph min_graph;
-  DfsCodes min_dfs_codes;
   History history;
   Output output;
   std::vector<int> right_most_path;
