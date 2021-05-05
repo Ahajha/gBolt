@@ -34,8 +34,6 @@ A prev_dfs_t represents an instance of a subgraph being found within
 an input graph.
 */
 struct prev_dfs_t {
-  prev_dfs_t() : id(0), edge(nullptr), prev(nullptr) {}
-
   prev_dfs_t(int id, const edge_t *edge, const prev_dfs_t *prev) :
     id(id), edge(edge), prev(prev) {}
 
