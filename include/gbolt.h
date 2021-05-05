@@ -79,8 +79,11 @@ struct gbolt_instance_t {
     size_t projection_start_index,
     size_t projection_end_index);
 
-  // This isn't the best place to put this, but this is temporary.
-  static void build_graph(const DfsCodes &dfs_codes, Graph& graph);
+  /*!
+  Clears min_graph, then constructs a graph
+  representation of dfs_codes into min_graph.
+  */
+  void build_min_graph(const DfsCodes &dfs_codes);
 
   // Report
   void report(const DfsCodes &dfs_codes, const Projection &projection,

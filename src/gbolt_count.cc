@@ -17,9 +17,10 @@ int GBolt::count_support(const Projection &projection) {
   return size;
 }
 
-void gbolt_instance_t::build_graph(const DfsCodes &dfs_codes, Graph& graph) {
+void gbolt_instance_t::build_min_graph(const DfsCodes &dfs_codes) {
   int edge_id = 0;
-  Vertice& vertice = graph.vertice;
+  Vertice& vertice = min_graph.vertice;
+  vertice.clear();
 
   // New size is just large enough to ensure no extra vertices at the end.
   int max_v_id = 0;
@@ -41,15 +42,11 @@ void gbolt_instance_t::build_graph(const DfsCodes &dfs_codes, Graph& graph) {
       edge->to, edge->edge_label, edge->from, edge_id);
     ++edge_id;
   }
-  graph.nedges = edge_id;
+  min_graph.nedges = edge_id;
 }
 
 bool gbolt_instance_t::is_min(const DfsCodes &dfs_codes) {
-  // Clear cache data structures
-  min_graph.vertice.clear();
-
-  // Build min graph
-  build_graph(dfs_codes, min_graph);
+  build_min_graph(dfs_codes);
 
   if (dfs_codes.size() == 1) {
     update_right_most_path(dfs_codes, 1);
@@ -60,7 +57,7 @@ bool gbolt_instance_t::is_min(const DfsCodes &dfs_codes) {
 
   // The first code in the sequence must be the
   // smallest if the sequence itself is minimal.
-  dfs_code_t min_dfs_code = *(dfs_codes.front());
+  const dfs_code_t& min_dfs_code = *(dfs_codes.front());
 
   for (const auto& vertex : min_graph.vertice) {
 
