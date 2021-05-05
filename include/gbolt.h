@@ -33,14 +33,7 @@ struct gbolt_instance_t {
   list. The path is stored such that the first item in right_most_path is the
   index of the edge 'discovering' the rightmost vertex, the second is the index
   of the edge discovering the 'from' vertex of the first edge, and so on.
-  */
-  void update_right_most_path(const DfsCodes &dfs_codes) {
-    update_right_most_path(dfs_codes, dfs_codes.size());
-  }
-
-  /*!
-  Same behavior as update_right_most_path(dfs_codes), except
-  behaves as if dfs_codes is truncated to the given size.
+  Dfs_codes is treated as if it is truncated to the given size.
   */
   void update_right_most_path(const DfsCodes &dfs_codes, size_t size) {
     right_most_path.clear();
