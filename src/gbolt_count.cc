@@ -91,7 +91,7 @@ bool gbolt_instance_t::is_min(const DfsCodes &dfs_codes) {
   min_dfs_codes.push_back(&min_dfs_code);
 
   update_right_most_path(dfs_codes, 1);
-  return is_projection_min(dfs_codes, 0);
+  return is_projection_min(dfs_codes);
 }
 
 bool gbolt_instance_t::judge_backward(
@@ -210,34 +210,35 @@ bool gbolt_instance_t::judge_forward(
   return min_projection.size() > projection_end_index;
 }
 
-bool gbolt_instance_t::is_projection_min(
-  const DfsCodes &dfs_codes,
-  size_t projection_start_index) {
+bool gbolt_instance_t::is_projection_min(const DfsCodes &dfs_codes) {
+  size_t projection_start_index = 0;
 
-  dfs_code_t min_dfs_code;
-  size_t projection_end_index = min_projection.size();
+  for (const dfs_code_t *code : dfs_codes) {
+    dfs_code_t min_dfs_code;
+    size_t projection_end_index = min_projection.size();
 
-  if (judge_backward(dfs_codes, min_dfs_code, projection_start_index, projection_end_index)) {
-    min_dfs_codes.emplace_back(&min_dfs_code);
-    // Dfs code not equals to min dfs code
-    if (*(dfs_codes[min_dfs_codes.size() - 1]) != min_dfs_code) {
-      return false;
+    if (judge_backward(dfs_codes, min_dfs_code, projection_start_index, projection_end_index)) {
+      min_dfs_codes.emplace_back(&min_dfs_code);
+      // Dfs code not equals to min dfs code
+      if (*(dfs_codes[min_dfs_codes.size() - 1]) != min_dfs_code) {
+        return false;
+      }
+      // Current dfs code is min
     }
-    // Current dfs code is min
-    return is_projection_min(dfs_codes, projection_end_index);
-  }
 
-  if (judge_forward(dfs_codes, min_dfs_code, projection_start_index, projection_end_index)) {
-    min_dfs_codes.emplace_back(&min_dfs_code);
-    // Dfs code not equals to min dfs code
-    if (*(dfs_codes[min_dfs_codes.size() - 1]) != min_dfs_code) {
-      return false;
+    else if (judge_forward(dfs_codes, min_dfs_code, projection_start_index, projection_end_index)) {
+      min_dfs_codes.emplace_back(&min_dfs_code);
+      // Dfs code not equals to min dfs code
+      if (*(dfs_codes[min_dfs_codes.size() - 1]) != min_dfs_code) {
+        return false;
+      }
+      // Current dfs code is min
+      // Only update the rightmost path in this branch, as it will not change
+      // if the last added edge was backwards.
+      update_right_most_path(dfs_codes, min_dfs_codes.size());
     }
-    // Current dfs code is min
-    // Only update the rightmost path in this branch, as it will not change
-    // if the last added edge was backwards.
-    update_right_most_path(dfs_codes, min_dfs_codes.size());
-    return is_projection_min(dfs_codes, projection_end_index);
+
+    projection_start_index = projection_end_index;
   }
 
   return true;

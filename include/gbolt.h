@@ -72,9 +72,7 @@ struct gbolt_instance_t {
   */
   bool is_min(const DfsCodes &dfs_codes);
 
-  bool is_projection_min(
-    const DfsCodes &dfs_codes,
-    size_t projection_start_index);
+  bool is_projection_min(const DfsCodes &dfs_codes);
 
   bool judge_backward(
     const DfsCodes& dfs_codes,
