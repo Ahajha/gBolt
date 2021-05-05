@@ -45,16 +45,17 @@ void gbolt_instance_t::build_graph(const DfsCodes &dfs_codes, Graph& graph) {
 }
 
 bool gbolt_instance_t::is_min(const DfsCodes &dfs_codes) {
-  if (dfs_codes.size() == 1)
-    return true;
-
   // Clear cache data structures
   min_graph.vertice.clear();
-  min_dfs_codes.clear();
-  min_projection.clear();
 
   // Build min graph
   build_graph(dfs_codes, min_graph);
+
+  if (dfs_codes.size() == 1)
+    return true;
+
+  min_dfs_codes.clear();
+  min_projection.clear();
 
   // The first code in the sequence must be the
   // smallest if the sequence itself is minimal.
