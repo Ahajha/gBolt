@@ -189,9 +189,6 @@ class GBolt {
   double support_;
   int nsupport_;
   vector<gbolt_instance_t> gbolt_instances_;
-  dfs_code_project_compare_t dfs_code_project_compare_;
-  dfs_code_forward_compare_t dfs_code_forward_compare_;
-  dfs_code_backward_compare_t dfs_code_backward_compare_;
 };
 
 }  // namespace gbolt
