@@ -36,12 +36,20 @@ struct gbolt_instance_t {
   of the edge discovering the 'from' vertex of the first edge, and so on.
   */
   void update_right_most_path(const DfsCodes &dfs_codes) {
+    update_right_most_path(dfs_codes, dfs_codes.size());
+  }
+
+  /*!
+  Same behavior as update_right_most_path(dfs_codes), except
+  behaves as if dfs_codes is truncated to the given size.
+  */
+  void update_right_most_path(const DfsCodes &dfs_codes, size_t size) {
     right_most_path.clear();
     int prev_id = -1;
 
     // Go in reverse, since we need to first look for the edge that discovered
     // the rightmost vertex
-    for (auto i = dfs_codes.size(); i > 0; --i) {
+    for (auto i = size; i > 0; --i) {
       // Only consider forward edges (as by definition the rightmost path only
       // consists of edges 'discovering' new nodes). The first forward edge (or
       // equivalently, the last forward edge in dfs_codes) is the edge discovering
