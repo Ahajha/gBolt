@@ -51,8 +51,10 @@ bool gbolt_instance_t::is_min(const DfsCodes &dfs_codes) {
   // Build min graph
   build_graph(dfs_codes, min_graph);
 
-  if (dfs_codes.size() == 1)
+  if (dfs_codes.size() == 1) {
+    update_right_most_path(dfs_codes, 1);
     return true;
+  }
 
   min_projection.clear();
 

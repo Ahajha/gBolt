@@ -111,9 +111,6 @@ void GBolt::mine_subgraph(
   Output& output = instance.output;
   prev_graph_id = output.size() - 1;
 
-  // Find right most path
-  instance.update_right_most_path(dfs_codes);
-
   // Enumerate backward paths and forward paths by different rules
   ProjectionMapBackward projection_map_backward;
   ProjectionMapForward projection_map_forward;
