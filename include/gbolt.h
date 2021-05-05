@@ -77,11 +77,13 @@ struct gbolt_instance_t {
     size_t projection_start_index);
 
   bool judge_backward(
+    const DfsCodes& dfs_codes,
     dfs_code_t &min_dfs_code,
     size_t projection_start_index,
     size_t projection_end_index);
 
   bool judge_forward(
+    const DfsCodes& dfs_codes,
     dfs_code_t &min_dfs_code,
     size_t projection_start_index,
     size_t projection_end_index);

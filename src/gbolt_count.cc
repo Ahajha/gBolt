@@ -90,11 +90,12 @@ bool gbolt_instance_t::is_min(const DfsCodes &dfs_codes) {
   }
   min_dfs_codes.push_back(&min_dfs_code);
 
-  update_right_most_path(min_dfs_codes);
+  update_right_most_path(dfs_codes, 1);
   return is_projection_min(dfs_codes, 0);
 }
 
 bool gbolt_instance_t::judge_backward(
+  const DfsCodes& dfs_codes,
   dfs_code_t &min_dfs_code,
   size_t projection_start_index,
   size_t projection_end_index) {
@@ -118,8 +119,8 @@ bool gbolt_instance_t::judge_backward(
             (ln_edge.label > edge.label ||
              (ln_edge.label == edge.label &&
               last_node.label >= to_node.label))) {
-          int from_id = min_dfs_codes[right_most_path[0]]->to;
-          int to_id = min_dfs_codes[right_most_path[i - 1]]->from;
+          int from_id = dfs_codes[right_most_path[0]]->to;
+          int to_id = dfs_codes[right_most_path[i - 1]]->from;
           dfs_code_t dfs_code(from_id, to_id,
             last_node.label, ln_edge.label, from_node.label);
           if (first_dfs_code || dfs_code_backward_compare_t{}(dfs_code, min_dfs_code)) {
@@ -140,10 +141,11 @@ bool gbolt_instance_t::judge_backward(
 }
 
 bool gbolt_instance_t::judge_forward(
+  const DfsCodes& dfs_codes,
   dfs_code_t &min_dfs_code,
   size_t projection_start_index,
   size_t projection_end_index) {
-  int min_label = min_dfs_codes[0]->from_label;
+  int min_label = dfs_codes[0]->from_label;
   bool first_dfs_code = true;
 
   for (auto i = projection_start_index; i < projection_end_index; ++i) {
@@ -156,7 +158,7 @@ bool gbolt_instance_t::judge_forward(
       const vertex_t& to_node = min_graph.vertice[ln_edge.to];
       if (history.has_vertice(ln_edge.to) || to_node.label < min_label)
         continue;
-      int to_id = min_dfs_codes[right_most_path[0]]->to;
+      int to_id = dfs_codes[right_most_path[0]]->to;
       dfs_code_t dfs_code(to_id, to_id + 1, last_node.label, ln_edge.label, to_node.label);
       if (first_dfs_code || dfs_code_forward_compare_t{}(dfs_code, min_dfs_code)) {
         first_dfs_code = false;
@@ -185,8 +187,8 @@ bool gbolt_instance_t::judge_forward(
           if (cur_edge.label < cn_edge.label ||
               (cur_edge.label == cn_edge.label &&
                cur_to.label <= to_node.label)) {
-            int from_id = min_dfs_codes[i]->from;
-            int to_id = min_dfs_codes[right_most_path[0]]->to;
+            int from_id = dfs_codes[i]->from;
+            int to_id = dfs_codes[right_most_path[0]]->to;
             dfs_code_t dfs_code(from_id, to_id + 1,
               cur_node.label, cn_edge.label, to_node.label);
             if (first_dfs_code || dfs_code_forward_compare_t{}(dfs_code, min_dfs_code)) {
@@ -215,7 +217,7 @@ bool gbolt_instance_t::is_projection_min(
   dfs_code_t min_dfs_code;
   size_t projection_end_index = min_projection.size();
 
-  if (judge_backward(min_dfs_code, projection_start_index, projection_end_index)) {
+  if (judge_backward(dfs_codes, min_dfs_code, projection_start_index, projection_end_index)) {
     min_dfs_codes.emplace_back(&min_dfs_code);
     // Dfs code not equals to min dfs code
     if (*(dfs_codes[min_dfs_codes.size() - 1]) != min_dfs_code) {
@@ -225,7 +227,7 @@ bool gbolt_instance_t::is_projection_min(
     return is_projection_min(dfs_codes, projection_end_index);
   }
 
-  if (judge_forward(min_dfs_code, projection_start_index, projection_end_index)) {
+  if (judge_forward(dfs_codes, min_dfs_code, projection_start_index, projection_end_index)) {
     min_dfs_codes.emplace_back(&min_dfs_code);
     // Dfs code not equals to min dfs code
     if (*(dfs_codes[min_dfs_codes.size() - 1]) != min_dfs_code) {
@@ -234,7 +236,7 @@ bool gbolt_instance_t::is_projection_min(
     // Current dfs code is min
     // Only update the rightmost path in this branch, as it will not change
     // if the last added edge was backwards.
-    update_right_most_path(min_dfs_codes);
+    update_right_most_path(dfs_codes, min_dfs_codes.size());
     return is_projection_min(dfs_codes, projection_end_index);
   }
 
