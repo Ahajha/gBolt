@@ -70,11 +70,12 @@ struct gbolt_instance_t {
   //! Returns true iff any projection can be extended with a backward edge.
   bool exists_backwards(const size_t projection_start_index);
 
-  bool judge_backward(
+  //! Returns true iff the given code is the minimum possible backward code
+  //! that can be extended from any projection.
+  bool is_backward_min(
     const DfsCodes& dfs_codes,
-    dfs_code_t &min_dfs_code,
-    size_t projection_start_index,
-    size_t projection_end_index);
+    const dfs_code_t &min_dfs_code,
+    const size_t projection_start_index);
 
   bool judge_forward(
     const DfsCodes& dfs_codes,

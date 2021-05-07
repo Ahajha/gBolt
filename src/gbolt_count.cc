@@ -117,12 +117,11 @@ bool gbolt_instance_t::exists_backwards(const size_t projection_start_index) {
   return false;
 }
 
-bool gbolt_instance_t::judge_backward(
+bool gbolt_instance_t::is_backward_min(
   const DfsCodes& dfs_codes,
-  dfs_code_t &min_dfs_code,
-  size_t projection_start_index,
-  size_t projection_end_index) {
-  bool first_dfs_code = true;
+  const dfs_code_t &min_dfs_code,
+  const size_t projection_start_index) {
+  const size_t projection_end_index = min_projection.size();
 
   // i > 0, because a backward edge cannot go to the last vertex.
   for (auto i = right_most_path.size() - 1; i > 0; --i) {
@@ -146,10 +145,9 @@ bool gbolt_instance_t::judge_backward(
           int to_id = dfs_codes[right_most_path[i]]->from;
           dfs_code_t dfs_code(from_id, to_id,
             last_node.label, ln_edge.label, from_node.label);
-          if (first_dfs_code || dfs_code_backward_compare_t{}(dfs_code, min_dfs_code)) {
-            first_dfs_code = false;
-            min_dfs_code = dfs_code;
-            min_projection.resize(projection_end_index);
+          // A smaller code was found, so the given code is not minimal.
+          if (dfs_code_backward_compare_t{}(dfs_code, min_dfs_code)) {
+            return false;
           }
           if (dfs_code == min_dfs_code) {
             min_projection.emplace_back(&ln_edge, j);
@@ -242,15 +240,21 @@ bool gbolt_instance_t::is_projection_min(const DfsCodes &dfs_codes) {
     dfs_code_t min_dfs_code;
     size_t projection_end_index = min_projection.size();
 
-    if (judge_backward(dfs_codes, min_dfs_code, projection_start_index, projection_end_index)) {
-      // Code is not minimal
-      if (code_to_validate != min_dfs_code) {
+    if (code_to_validate.from > code_to_validate.to) {
+      // Code is backwards, ensure it is minimal
+      if (!is_backward_min(dfs_codes, code_to_validate, projection_start_index)) {
         return false;
       }
       // Backward edge validated, does not affect the rightmost path.
     }
+    else {
+      // Code is forwards. All backward codes are smaller than forward codes,
+      // so ensure no backwards codes exist, then ensure the code is minimal.
+      if (exists_backwards(projection_start_index))
+        return false;
 
-    else if (judge_forward(dfs_codes, min_dfs_code, projection_start_index, projection_end_index)) {
+      judge_forward(dfs_codes, min_dfs_code, projection_start_index,
+        projection_end_index);
       // Code is not minimal
       if (code_to_validate != min_dfs_code) {
         return false;
