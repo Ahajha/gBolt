@@ -9,9 +9,9 @@ namespace gbolt {
 class History {
  public:
   History(int max_edges, int max_vertice) : edge_size_(0) {
-    edges_ = new ConstEdgePointer[max_edges + 1];
-    has_edges_ = new bool[max_edges + 1]();
-    has_vertice_ = new bool[max_vertice + 1]();
+    edges_ = new ConstEdgePointer[max_edges];
+    has_edges_ = new bool[max_edges];
+    has_vertice_ = new bool[max_vertice];
   }
 
   /*!

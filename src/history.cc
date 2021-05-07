@@ -13,8 +13,8 @@ namespace gbolt {
 //   cur_dfs = cur_dfs->prev;
 // }
 void History::build(const prev_dfs_t &start, const Graph &graph) {
-  memset(has_edges_, false, sizeof(bool) * graph.nedges + 1);
-  memset(has_vertice_, false, sizeof(bool) * graph.vertice.size() + 1);
+  memset(has_edges_, false, sizeof(bool) * graph.nedges);
+  memset(has_vertice_, false, sizeof(bool) * graph.vertice.size());
   edge_size_ = 0;
 
   // Reduce push back memory costs
@@ -27,7 +27,7 @@ void History::build(const prev_dfs_t &start, const Graph &graph) {
 }
 
 void History::build_edges(const prev_dfs_t &start, const Graph &graph) {
-  memset(has_edges_, false, sizeof(bool) * graph.nedges + 1);
+  memset(has_edges_, false, sizeof(bool) * graph.nedges);
   edge_size_ = 0;
 
   // Reduce push back memory costs
@@ -38,7 +38,7 @@ void History::build_edges(const prev_dfs_t &start, const Graph &graph) {
 }
 
 void History::build_edges_min(const MinProjection &projection, const Graph &graph, int start) {
-  memset(has_edges_, false, sizeof(bool) * graph.nedges + 1);
+  memset(has_edges_, false, sizeof(bool) * graph.nedges);
   edge_size_ = 0;
 
   // Reduce push back memory costs
@@ -51,7 +51,7 @@ void History::build_edges_min(const MinProjection &projection, const Graph &grap
 }
 
 void History::build_vertice(const prev_dfs_t &start, const Graph &graph) {
-  memset(has_vertice_, false, sizeof(bool) * graph.vertice.size() + 1);
+  memset(has_vertice_, false, sizeof(bool) * graph.vertice.size());
   edge_size_ = 0;
 
   // Reduce push back memory costs
@@ -63,7 +63,7 @@ void History::build_vertice(const prev_dfs_t &start, const Graph &graph) {
 }
 
 void History::build_vertice_min(const MinProjection &projection, const Graph &graph, int start) {
-  memset(has_vertice_, false, sizeof(bool) * graph.vertice.size() + 1);
+  memset(has_vertice_, false, sizeof(bool) * graph.vertice.size());
   edge_size_ = 0;
 
   // Reduce push back memory costs
