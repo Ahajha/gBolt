@@ -161,13 +161,12 @@ bool gbolt_instance_t::is_backward_min(
   return false;
 }
 
-bool gbolt_instance_t::judge_forward(
+bool gbolt_instance_t::is_forward_min(
   const DfsCodes& dfs_codes,
-  dfs_code_t &min_dfs_code,
-  size_t projection_start_index,
-  size_t projection_end_index) {
+  const dfs_code_t &min_dfs_code,
+  const size_t projection_start_index) {
+  const size_t projection_end_index = min_projection.size();
   int min_label = dfs_codes[0]->from_label;
-  bool first_dfs_code = true;
 
   for (auto i = projection_start_index; i < projection_end_index; ++i) {
     history.build_vertice_min(min_projection, min_graph, i);
@@ -181,10 +180,9 @@ bool gbolt_instance_t::judge_forward(
         continue;
       int to_id = dfs_codes[right_most_path[0]]->to;
       dfs_code_t dfs_code(to_id, to_id + 1, last_node.label, ln_edge.label, to_node.label);
-      if (first_dfs_code || dfs_code_forward_compare_t{}(dfs_code, min_dfs_code)) {
-        first_dfs_code = false;
-        min_dfs_code = dfs_code;
-        min_projection.resize(projection_end_index);
+      // A smaller code was found, so the given code is not minimal.
+      if (dfs_code_forward_compare_t{}(dfs_code, min_dfs_code)) {
+        return false;
       }
       if (dfs_code == min_dfs_code) {
         min_projection.emplace_back(&ln_edge, i);
@@ -212,10 +210,9 @@ bool gbolt_instance_t::judge_forward(
             int to_id = dfs_codes[right_most_path[0]]->to;
             dfs_code_t dfs_code(from_id, to_id + 1,
               cur_node.label, cn_edge.label, to_node.label);
-            if (first_dfs_code || dfs_code_forward_compare_t{}(dfs_code, min_dfs_code)) {
-              first_dfs_code = false;
-              min_dfs_code = dfs_code;
-              min_projection.resize(projection_end_index);
+            // A smaller code was found, so the given code is not minimal.
+            if (dfs_code_forward_compare_t{}(dfs_code, min_dfs_code)) {
+              return false;
             }
             if (dfs_code == min_dfs_code) {
               min_projection.emplace_back(&cn_edge, j);
@@ -224,11 +221,11 @@ bool gbolt_instance_t::judge_forward(
         }
       }
       if (min_projection.size() > projection_end_index) {
-        break;
+        return true;
       }
     }
   }
-  return min_projection.size() > projection_end_index;
+  return true;
 }
 
 bool gbolt_instance_t::is_projection_min(const DfsCodes &dfs_codes) {
@@ -237,26 +234,22 @@ bool gbolt_instance_t::is_projection_min(const DfsCodes &dfs_codes) {
   // Start at index 1, index 0 has already been validated.
   for (size_t i = 1; i < dfs_codes.size(); ++i) {
     const dfs_code_t& code_to_validate = *(dfs_codes[i]);
-    dfs_code_t min_dfs_code;
-    size_t projection_end_index = min_projection.size();
+    const size_t projection_end_index = min_projection.size();
 
+    // Note: If a forward and a backward edge can be both be used to extend
+    // the code, then the backward edge must be smaller.
     if (code_to_validate.from > code_to_validate.to) {
-      // Code is backwards, ensure it is minimal
+      // Code is backwards, ensure it is minimal.
       if (!is_backward_min(dfs_codes, code_to_validate, projection_start_index)) {
         return false;
       }
       // Backward edge validated, does not affect the rightmost path.
     }
     else {
-      // Code is forwards. All backward codes are smaller than forward codes,
-      // so ensure no backwards codes exist, then ensure the code is minimal.
-      if (exists_backwards(projection_start_index))
-        return false;
-
-      judge_forward(dfs_codes, min_dfs_code, projection_start_index,
-        projection_end_index);
-      // Code is not minimal
-      if (code_to_validate != min_dfs_code) {
+      // Code is forwards, so ensure no backwards codes exist,
+      // then ensure the code is minimal.
+      if (exists_backwards(projection_start_index) ||
+          !is_forward_min(dfs_codes, code_to_validate, projection_start_index)) {
         return false;
       }
       // Forward edge was validated, so update the rightmost path.
