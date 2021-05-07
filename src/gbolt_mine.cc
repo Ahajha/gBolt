@@ -53,7 +53,7 @@ void gbolt_instance_t::report(const DfsCodes &dfs_codes,
       << ' ' << edge->edge_label << '\n';
   }
   ss << "x: ";
-  int prev_id = 0;
+  int prev_id = -1;
   for (const auto& link : projection) {
     if (link.id != prev_id) {
       prev_id = link.id;
