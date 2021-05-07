@@ -19,8 +19,6 @@ struct edge_t {
 
 // dfs projection links
 struct min_prev_dfs_t {
-  min_prev_dfs_t() : edge(nullptr), prev(-1) {}
-
   min_prev_dfs_t(const edge_t *edge, int prev) :
     edge(edge), prev(prev) {}
 
@@ -56,8 +54,6 @@ using Projection = vector<prev_dfs_t>;
 
 // dfs codes forward and backward compare
 struct dfs_code_t {
-  dfs_code_t() : from(0), to(0), from_label(0), edge_label(0), to_label(0) {}
-
   dfs_code_t(int from, int to, int from_label, int edge_label, int to_label) :
     from(from), to(to),
     from_label(from_label), edge_label(edge_label), to_label(to_label) {}
