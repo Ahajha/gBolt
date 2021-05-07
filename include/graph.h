@@ -19,8 +19,6 @@ struct edge_t {
 
 // dfs projection links
 struct min_prev_dfs_t {
-  min_prev_dfs_t() : edge(nullptr), prev(-1) {}
-
   min_prev_dfs_t(const edge_t *edge, int prev) :
     edge(edge), prev(prev) {}
 
