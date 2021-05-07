@@ -23,10 +23,9 @@ void gbolt_instance_t::build_min_graph(const DfsCodes &dfs_codes) {
   vertice.clear();
 
   // New size is just large enough to ensure no extra vertices at the end.
-  int max_v_id = 0;
-  for (const auto edge : dfs_codes) {
-    max_v_id = std::max(edge->from, edge->to);
-  }
+  // The max vertex id is either the last code's 'from' (if it is backwards),
+  // or the last code's 'to' (if it is forwards). So just take the max of the two.
+  const int max_v_id = std::max(dfs_codes.back()->from, dfs_codes.back()->to);
   vertice.resize(max_v_id + 1);
 
   for (const auto edge : dfs_codes) {
