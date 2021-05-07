@@ -26,36 +26,8 @@ struct gbolt_instance_t {
     min_projection.reserve(DEFAULT_PATH_LEN);
   }
 
-  // Extend
-
-  /*!
-  Clears right_most_path, then stores into it the rightmost path of the dfs code
-  list. The path is stored such that the first item in right_most_path is the
-  index of the edge 'discovering' the rightmost vertex, the second is the index
-  of the edge discovering the 'from' vertex of the first edge, and so on.
-  Dfs_codes is treated as if it is truncated to the given size.
-  */
-  void update_right_most_path(const DfsCodes &dfs_codes, size_t size) {
-    right_most_path.clear();
-    int prev_id = -1;
-
-    // Go in reverse, since we need to first look for the edge that discovered
-    // the rightmost vertex
-    for (auto i = size; i > 0; --i) {
-      // Only consider forward edges (as by definition the rightmost path only
-      // consists of edges 'discovering' new nodes). The first forward edge (or
-      // equivalently, the last forward edge in dfs_codes) is the edge discovering
-      // the rightmost vertex. After that, each new edge is the edge discovering
-      // the 'from' of the previous one.
-      if (dfs_codes[i - 1]->from < dfs_codes[i - 1]->to &&
-        (right_most_path.empty() || prev_id == dfs_codes[i - 1]->to)) {
-        prev_id = dfs_codes[i - 1]->from;
-        right_most_path.push_back(i - 1);
-      }
-    }
-  }
-
-  // Count
+  //!@name Methods relating to determining if a DFS code sequence is minimal:
+  ///@{
 
   /*!
   Returns true iff dfs_codes is a minimal DFS code sequence.
@@ -65,34 +37,64 @@ struct gbolt_instance_t {
   */
   bool is_min(const DfsCodes &dfs_codes);
 
-  bool is_projection_min(const DfsCodes &dfs_codes);
-
-  //! Returns true iff any projection can be extended with a backward edge.
-  bool exists_backwards(const size_t projection_start_index);
-
-  //! Returns true iff the given code is the minimum possible backward code
-  //! that can be extended from any projection.
-  bool is_backward_min(
-    const DfsCodes& dfs_codes,
-    const dfs_code_t &min_dfs_code,
-    const size_t projection_start_index);
-
-  //! Returns true iff the given code is the minimum possible forward code
-  //! that can be extended from any projection.
-  bool is_forward_min(
-    const DfsCodes& dfs_codes,
-    const dfs_code_t &min_dfs_code,
-    const size_t projection_start_index);
-
   /*!
   Clears min_graph, then constructs a graph
   representation of dfs_codes into min_graph.
   */
   void build_min_graph(const DfsCodes &dfs_codes);
 
-  // Report
+  /*!
+  Returns true iff dfs_codes is a minimal DFS code sequence.
+  Validates all codes except the first.
+  */
+  bool is_projection_min(const DfsCodes &dfs_codes);
+
+  /*!
+  Clears right_most_path, then stores into it the rightmost path of the dfs code
+  list. The path is stored such that the first item in right_most_path is the
+  index of the edge 'discovering' the rightmost vertex, the second is the index
+  of the edge discovering the 'from' vertex of the first edge, and so on.
+  Dfs_codes is treated as if it is truncated to the given size.
+  */
+  void update_right_most_path(const DfsCodes &dfs_codes, size_t size);
+
+  /*!
+  Returns true iff any projection can be extended with a backward edge.
+  */
+  bool exists_backwards(const size_t projection_start_index);
+
+  /*!
+  Returns true iff the given code is the minimum possible backward code
+  that can be extended from any projection. If so, adds all possible
+  projections into min_projection.
+  */
+  bool is_backward_min(
+    const DfsCodes& dfs_codes,
+    const dfs_code_t &min_dfs_code,
+    const size_t projection_start_index);
+
+  /*!
+  Returns true iff the given code is the minimum possible forward code
+  that can be extended from any projection. If so, adds all possible
+  projections into min_projection.
+  */
+  bool is_forward_min(
+    const DfsCodes& dfs_codes,
+    const dfs_code_t &min_dfs_code,
+    const size_t projection_start_index);
+
+  ///@}
+  //!@name Methods relating to output:
+  ///@{
+
+  /*!
+  Reports a given DFS code sequence as frequent, outputs the graph
+  and all projections of it.
+  */
   void report(const DfsCodes &dfs_codes, const Projection &projection,
     int nsupport, int prev_thread_id, int prev_graph_id);
+
+  ///@}
 };
 
 class GBolt {

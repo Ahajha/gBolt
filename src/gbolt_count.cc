@@ -44,6 +44,26 @@ void gbolt_instance_t::build_min_graph(const DfsCodes &dfs_codes) {
   min_graph.nedges = edge_id;
 }
 
+void gbolt_instance_t::update_right_most_path(const DfsCodes &dfs_codes, size_t size) {
+  right_most_path.clear();
+  int prev_id = -1;
+
+  // Go in reverse, since we need to first look for the edge that discovered
+  // the rightmost vertex
+  for (auto i = size; i > 0; --i) {
+    // Only consider forward edges (as by definition the rightmost path only
+    // consists of edges 'discovering' new nodes). The first forward edge (or
+    // equivalently, the last forward edge in dfs_codes) is the edge discovering
+    // the rightmost vertex. After that, each new edge is the edge discovering
+    // the 'from' of the previous one.
+    if (dfs_codes[i - 1]->from < dfs_codes[i - 1]->to &&
+      (right_most_path.empty() || prev_id == dfs_codes[i - 1]->to)) {
+      prev_id = dfs_codes[i - 1]->from;
+      right_most_path.push_back(i - 1);
+    }
+  }
+}
+
 bool gbolt_instance_t::is_min(const DfsCodes &dfs_codes) {
   build_min_graph(dfs_codes);
 
