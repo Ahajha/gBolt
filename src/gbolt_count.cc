@@ -112,19 +112,19 @@ bool gbolt_instance_t::is_min(const DfsCodes &dfs_codes) {
 
 bool gbolt_instance_t::exists_backwards(const size_t projection_start_index) {
   const size_t projection_end_index = min_projection.size();
-  // i > 0, because a backward edge cannot go to the last vertex.
-  for (auto i = right_most_path.size() - 1; i > 0; --i) {
-    for (auto j = projection_start_index; j < projection_end_index; ++j) {
-      history.build_edges_min(min_projection, min_graph, j);
+  for (auto j = projection_start_index; j < projection_end_index; ++j) {
+    history.build_edges_min(min_projection, min_graph, j);
+    const edge_t& last_edge = history.get_edge(right_most_path[0]);
+    const vertex_t& last_node = min_graph.vertice[last_edge.to];
+    for (const auto& ln_edge : last_node.edges) {
+      if (history.has_edges(ln_edge.id))
+        continue;
+      // i > 0, because a backward edge cannot go to the last vertex.
+      for (auto i = right_most_path.size() - 1; i > 0; --i) {
 
-      const edge_t& edge = history.get_edge(right_most_path[i]);
-      const edge_t& last_edge = history.get_edge(right_most_path[0]);
-      const vertex_t& last_node = min_graph.vertice[last_edge.to];
-      const vertex_t& to_node = min_graph.vertice[edge.to];
+        const edge_t& edge = history.get_edge(right_most_path[i]);
+        const vertex_t& to_node = min_graph.vertice[edge.to];
 
-      for (const auto& ln_edge : last_node.edges) {
-        if (history.has_edges(ln_edge.id))
-          continue;
         if (ln_edge.to == edge.from &&
             (ln_edge.label > edge.label ||
              (ln_edge.label == edge.label &&
