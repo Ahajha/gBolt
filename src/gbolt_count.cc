@@ -144,7 +144,9 @@ bool gbolt_instance_t::is_backward_min(
   const size_t projection_end_index = min_projection.size();
 
   // i > 0, because a backward edge cannot go to the last vertex.
+  const int from_id = dfs_codes[right_most_path[0]]->to;
   for (auto i = right_most_path.size() - 1; i > 0; --i) {
+    const int to_id = dfs_codes[right_most_path[i]]->from;
     for (auto j = projection_start_index; j < projection_end_index; ++j) {
       history.build_edges_min(min_projection, min_graph, j);
 
@@ -161,8 +163,6 @@ bool gbolt_instance_t::is_backward_min(
             (ln_edge.label > edge.label ||
              (ln_edge.label == edge.label &&
               last_node.label >= to_node.label))) {
-          int from_id = dfs_codes[right_most_path[0]]->to;
-          int to_id = dfs_codes[right_most_path[i]]->from;
           dfs_code_t dfs_code(from_id, to_id,
             last_node.label, ln_edge.label, from_node.label);
           // A smaller code was found, so the given code is not minimal.
@@ -186,8 +186,9 @@ bool gbolt_instance_t::is_forward_min(
   const dfs_code_t &min_dfs_code,
   const size_t projection_start_index) {
   const size_t projection_end_index = min_projection.size();
-  int min_label = dfs_codes[0]->from_label;
+  const int min_label = dfs_codes[0]->from_label;
 
+  const int max_id = dfs_codes[right_most_path[0]]->to;
   for (auto i = projection_start_index; i < projection_end_index; ++i) {
     history.build_vertice_min(min_projection, min_graph, i);
 
@@ -198,8 +199,7 @@ bool gbolt_instance_t::is_forward_min(
       const vertex_t& to_node = min_graph.vertice[ln_edge.to];
       if (history.has_vertice(ln_edge.to) || to_node.label < min_label)
         continue;
-      int to_id = dfs_codes[right_most_path[0]]->to;
-      dfs_code_t dfs_code(to_id, to_id + 1, last_node.label, ln_edge.label, to_node.label);
+      dfs_code_t dfs_code(max_id, max_id + 1, last_node.label, ln_edge.label, to_node.label);
       // A smaller code was found, so the given code is not minimal.
       if (dfs_code_forward_compare_t{}(dfs_code, min_dfs_code)) {
         return false;
@@ -212,6 +212,7 @@ bool gbolt_instance_t::is_forward_min(
 
   if (min_projection.size() == projection_end_index) {
     for (auto i : right_most_path) {
+      const int from_id = dfs_codes[i]->from;
       for (auto j = projection_start_index; j < projection_end_index; ++j) {
         history.build_vertice_min(min_projection, min_graph, j);
 
@@ -226,9 +227,7 @@ bool gbolt_instance_t::is_forward_min(
           if (cur_edge.label < cn_edge.label ||
               (cur_edge.label == cn_edge.label &&
                cur_to.label <= to_node.label)) {
-            int from_id = dfs_codes[i]->from;
-            int to_id = dfs_codes[right_most_path[0]]->to;
-            dfs_code_t dfs_code(from_id, to_id + 1,
+            dfs_code_t dfs_code(from_id, max_id + 1,
               cur_node.label, cn_edge.label, to_node.label);
             // A smaller code was found, so the given code is not minimal.
             if (dfs_code_forward_compare_t{}(dfs_code, min_dfs_code)) {
