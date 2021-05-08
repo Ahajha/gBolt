@@ -20,17 +20,7 @@ class History {
   */
   void build(const prev_dfs_t &start, const Graph &graph);
 
-  /*!
-  Clears edges_ and has_edges_, refills them using start.
-  */
-  void build_edges(const prev_dfs_t &start, const Graph &graph);
-
   void build_edges_min(const MinProjection &projection, const Graph &graph, int start);
-
-  /*!
-  Clears edges_ and has_vertice_, refills them using start.
-  */
-  void build_vertice(const prev_dfs_t &start, const Graph &graph);
 
   void build_vertice_min(const MinProjection &projection, const Graph &graph, int start);
 
