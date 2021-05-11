@@ -21,10 +21,7 @@ struct gbolt_instance_t {
   MinProjection min_projection;
 
   gbolt_instance_t(int max_edges, int max_vertice, const string& output_file_thread)
-    : history(max_edges, max_vertice), output(output_file_thread) {
-    right_most_path.reserve(DEFAULT_PATH_LEN);
-    min_projection.reserve(DEFAULT_PATH_LEN);
-  }
+    : history(max_edges, max_vertice), output(output_file_thread) {}
 
   //!@name Methods relating to determining if a DFS code sequence is minimal:
   ///@{
