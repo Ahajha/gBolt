@@ -18,14 +18,14 @@ int main(int argc, char *argv[]) {
     ("h,help", "gBolt help");
 
   if (argc == 1) {
-    LOG_INFO(options.help().c_str());
+    LOG_INFO("%s", options.help().c_str());
     return 0;
   }
 
   auto result = options.parse(argc, argv);
 
   if (result["help"].count() || result["h"].count()) {
-    LOG_INFO(options.help().c_str());
+    LOG_INFO("%s", options.help().c_str());
     return 0;
   }
 
