@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
 
   auto result = options.parse(argc, argv);
 
-  if (result["help"].count() || result["h"].count()) {
+  if (result["help"].count()) {
     LOG_INFO("%s", options.help().c_str());
     return 0;
   }
