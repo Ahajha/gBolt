@@ -124,11 +124,8 @@ bool gbolt_instance_t::exists_backwards(const size_t projection_start_index) {
         const vertex_t& to_node = min_graph.vertice[edge.to];
 
         if (ln_edge.to == edge.from &&
-            (ln_edge.label > edge.label ||
-             (ln_edge.label == edge.label &&
-              last_node.label >= to_node.label))) {
+          lexicographic_leq(edge.label, to_node.label, ln_edge.label, last_node.label))
           return true;
-        }
       }
     }
   }
@@ -158,9 +155,7 @@ bool gbolt_instance_t::is_backward_min(
         if (history.has_edges(ln_edge.id))
           continue;
         if (ln_edge.to == edge.from &&
-            (ln_edge.label > edge.label ||
-             (ln_edge.label == edge.label &&
-              last_node.label >= to_node.label))) {
+          lexicographic_leq(edge.label, to_node.label, ln_edge.label, last_node.label)) {
           dfs_code_t dfs_code{from_id, to_id,
             last_node.label, ln_edge.label, from_node.label};
           // A smaller code was found, so the given code is not minimal.
@@ -222,9 +217,7 @@ bool gbolt_instance_t::is_forward_min(
           const vertex_t& to_node = min_graph.vertice[cn_edge.to];
           if (history.has_vertice(to_node.id) || cur_edge.to == to_node.id || to_node.label < min_label)
             continue;
-          if (cur_edge.label < cn_edge.label ||
-              (cur_edge.label == cn_edge.label &&
-               cur_to.label <= to_node.label)) {
+          if (lexicographic_leq(cur_edge.label, cur_to.label, cn_edge.label, to_node.label)) {
             dfs_code_t dfs_code{from_id, max_id + 1,
               cur_node.label, cn_edge.label, to_node.label};
             // A smaller code was found, so the given code is not minimal.

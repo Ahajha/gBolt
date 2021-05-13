@@ -69,6 +69,13 @@ using std::set;
 using std::unordered_set;
 using std::vector;
 
+/*!
+Returns true iff (a,b) compares lexicographically less than or equal to (c,d).
+*/
+inline bool lexicographic_leq(int a, int b, int c, int d) {
+  return a < c || (a == c && b <= d);
+}
+
 }  // namespace gbolt
 
 #endif  // INCLUDE_COMMON_H_

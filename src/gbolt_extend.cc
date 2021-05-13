@@ -44,9 +44,7 @@ void GBolt::get_backward(
       if (history.has_edges(ln_edge.id))
         continue;
       if (ln_edge.to == edge.from &&
-          (ln_edge.label > edge.label ||
-           (ln_edge.label == edge.label &&
-            last_node.label >= to_node_label))) {
+        lexicographic_leq(edge.label, to_node_label, ln_edge.label, last_node.label)) {
         dfs_code_t dfs_code{from_id, to_id,
           last_node.label, ln_edge.label, from_node_label};
         projection_map_backward[dfs_code].
@@ -107,9 +105,7 @@ void GBolt::get_other_forward(
       if (history.has_vertice(to_node.id) ||
         to_node.id == cur_to.id || to_node.label < min_label)
         continue;
-      if (cur_edge.label < cn_edge.label ||
-          (cur_edge.label == cn_edge.label &&
-           cur_to.label <= to_node.label)) {
+      if (lexicographic_leq(cur_edge.label, cur_to.label, cn_edge.label, to_node.label)) {
         dfs_code_t dfs_code{from_id, to_id + 1, cur_node.label,
           cn_edge.label, to_node.label};
         projection_map_forward[dfs_code].
