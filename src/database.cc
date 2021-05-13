@@ -66,6 +66,12 @@ void Database::construct_graphs(
 
   graphs.reserve(input_graphs_.size());
 
+  #ifdef GBOLT_PERFORMANCE
+  unordered_map<int, int> id_map;
+  #else
+  map<int, int> id_map;
+  #endif
+
   for (const auto& input_graph : input_graphs_) {
     graphs.emplace_back();
 
@@ -75,8 +81,10 @@ void Database::construct_graphs(
     int vertex_id = 0;
     for (const auto& vert : input_graph.vertices) {
       if (frequent_vertex_labels.find(vert.label)
-        != frequent_vertex_labels.end())
-      vertice.emplace_back(vertex_id++, vert.label);
+        != frequent_vertex_labels.end()) {
+        id_map[vert.id] = vertex_id;
+        vertice.emplace_back(vertex_id++, vert.label);
+      }
     }
 
     int edge_id = 0;
@@ -86,14 +94,18 @@ void Database::construct_graphs(
       if (frequent_vertex_labels.find(label_from) != frequent_vertex_labels.end() &&
         frequent_vertex_labels.find(label_to) != frequent_vertex_labels.end() &&
         frequent_edge_labels.find(edge.label) != frequent_edge_labels.end()) {
-        vertice[edge.from].edges.emplace_back(edge.from, edge.label, edge.to, edge_id);
-        vertice[edge.to].edges.emplace_back(edge.to, edge.label, edge.from, edge_id);
+        const int to = id_map[edge.to];
+        const int from = id_map[edge.from];
+        vertice[from].edges.emplace_back(from, edge.label, to, edge_id);
+        vertice[to  ].edges.emplace_back(to, edge.label, from, edge_id);
         ++edge_id;
       }
     }
 
     graphs.back().id = input_graph.id;
     graphs.back().nedges = edge_id;
+
+    id_map.clear();
   }
 }
 
