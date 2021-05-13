@@ -89,7 +89,7 @@ bool gbolt_instance_t::is_min(const DfsCodes &dfs_codes) {
 
         // Hypothetical DFS code of this edge if it were the first edge in
         // a code sequence
-        dfs_code_t dfs_code(0, 1, vertex.label, edge.label, vertex_to_label);
+        dfs_code_t dfs_code{0, 1, vertex.label, edge.label, vertex_to_label};
 
         // If this DFS code is smaller than the first code, the code sequence
         // is not minimal.
@@ -161,8 +161,8 @@ bool gbolt_instance_t::is_backward_min(
             (ln_edge.label > edge.label ||
              (ln_edge.label == edge.label &&
               last_node.label >= to_node.label))) {
-          dfs_code_t dfs_code(from_id, to_id,
-            last_node.label, ln_edge.label, from_node.label);
+          dfs_code_t dfs_code{from_id, to_id,
+            last_node.label, ln_edge.label, from_node.label};
           // A smaller code was found, so the given code is not minimal.
           if (dfs_code_backward_compare_t{}(dfs_code, min_dfs_code)) {
             return false;
@@ -197,7 +197,7 @@ bool gbolt_instance_t::is_forward_min(
       const vertex_t& to_node = min_graph.vertice[ln_edge.to];
       if (history.has_vertice(ln_edge.to) || to_node.label < min_label)
         continue;
-      dfs_code_t dfs_code(max_id, max_id + 1, last_node.label, ln_edge.label, to_node.label);
+      dfs_code_t dfs_code{max_id, max_id + 1, last_node.label, ln_edge.label, to_node.label};
       // A smaller code was found, so the given code is not minimal.
       if (dfs_code_forward_compare_t{}(dfs_code, min_dfs_code)) {
         return false;
@@ -225,8 +225,8 @@ bool gbolt_instance_t::is_forward_min(
           if (cur_edge.label < cn_edge.label ||
               (cur_edge.label == cn_edge.label &&
                cur_to.label <= to_node.label)) {
-            dfs_code_t dfs_code(from_id, max_id + 1,
-              cur_node.label, cn_edge.label, to_node.label);
+            dfs_code_t dfs_code{from_id, max_id + 1,
+              cur_node.label, cn_edge.label, to_node.label};
             // A smaller code was found, so the given code is not minimal.
             if (dfs_code_forward_compare_t{}(dfs_code, min_dfs_code)) {
               return false;

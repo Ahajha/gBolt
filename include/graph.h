@@ -54,10 +54,6 @@ using Projection = vector<prev_dfs_t>;
 
 // dfs codes forward and backward compare
 struct dfs_code_t {
-  dfs_code_t(int from, int to, int from_label, int edge_label, int to_label) :
-    from(from), to(to),
-    from_label(from_label), edge_label(edge_label), to_label(to_label) {}
-
   bool operator != (const dfs_code_t &t) const {
     return (from != t.from) || (to != t.to) ||
       (from_label != t.from_label) || (edge_label != t.edge_label) ||

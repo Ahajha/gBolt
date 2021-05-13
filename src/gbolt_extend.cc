@@ -47,8 +47,8 @@ void GBolt::get_backward(
           (ln_edge.label > edge.label ||
            (ln_edge.label == edge.label &&
             last_node.label >= to_node_label))) {
-        dfs_code_t dfs_code(from_id, to_id,
-          last_node.label, ln_edge.label, from_node_label);
+        dfs_code_t dfs_code{from_id, to_id,
+          last_node.label, ln_edge.label, from_node_label};
         projection_map_backward[dfs_code].
           emplace_back(graph.id, &ln_edge, &prev_dfs);
       }
@@ -77,8 +77,8 @@ void GBolt::get_first_forward(
     if (history.has_vertice(ln_edge.to) || to_node_label < min_label)
       continue;
     const int to_id = dfs_codes[right_most_path[0]]->to;
-    dfs_code_t dfs_code(to_id, to_id + 1,
-      last_node.label, ln_edge.label, to_node_label);
+    dfs_code_t dfs_code{to_id, to_id + 1,
+      last_node.label, ln_edge.label, to_node_label};
     projection_map_forward[dfs_code].
       emplace_back(graph.id, &ln_edge, &prev_dfs);
   }
@@ -110,8 +110,8 @@ void GBolt::get_other_forward(
       if (cur_edge.label < cn_edge.label ||
           (cur_edge.label == cn_edge.label &&
            cur_to.label <= to_node.label)) {
-        dfs_code_t dfs_code(from_id, to_id + 1, cur_node.label,
-          cn_edge.label, to_node.label);
+        dfs_code_t dfs_code{from_id, to_id + 1, cur_node.label,
+          cn_edge.label, to_node.label};
         projection_map_forward[dfs_code].
           emplace_back(graph.id, &cn_edge, &prev_dfs);
       }
