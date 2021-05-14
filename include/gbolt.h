@@ -120,10 +120,7 @@ class GBolt {
 
   void mine_subgraph(
     const Projection &projection,
-    DfsCodes &dfs_codes,
-    int prev_nsupport,
-    int prev_thread_id,
-    int prev_graph_id);
+    DfsCodes &dfs_codes);
 
   void mine_child(
     const Projection &projection,

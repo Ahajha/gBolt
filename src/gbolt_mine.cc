@@ -97,19 +97,11 @@ void GBolt::save(bool output_parent, bool output_pattern, bool output_frequent_n
 
 void GBolt::mine_subgraph(
   const Projection &projection,
-  DfsCodes &dfs_codes,
-  int prev_nsupport,
-  int prev_thread_id,
-  int prev_graph_id) {
+  DfsCodes &dfs_codes) {
   gbolt_instance_t& instance = thread_instance();
-  if (!instance.is_min(dfs_codes)) {
-    return;
-  }
-  instance.report(dfs_codes, projection, prev_nsupport, prev_thread_id, prev_graph_id);
-  prev_thread_id = thread_id();
 
-  Output& output = instance.output;
-  prev_graph_id = output.size() - 1;
+  const int prev_thread_id = thread_id();
+  const int prev_graph_id = instance.output.size() - 1;
 
   // Enumerate backward paths and forward paths by different rules
   ProjectionMapBackward projection_map_backward;
@@ -144,7 +136,11 @@ void GBolt::mine_child(
   #endif
   {
     dfs_codes.emplace_back(&next_code);
-    mine_subgraph(projection, dfs_codes, nsupport, prev_thread_id, prev_graph_id);
+    gbolt_instance_t& instance = thread_instance();
+    if (instance.is_min(dfs_codes)) {
+      instance.report(dfs_codes, projection, nsupport, prev_thread_id, prev_graph_id);
+      mine_subgraph(projection, dfs_codes);
+    }
     #ifdef GBOLT_SERIAL
     dfs_codes.pop_back();
     #endif
