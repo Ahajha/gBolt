@@ -11,7 +11,7 @@ void GBolt::find_frequent_nodes_and_edges(const Database& db) {
   unordered_map<int, int> edge_labels;
 
   const auto& graphs = db.get_graphs();
-  for (auto i = 0; i < graphs.size(); ++i) {
+  for (auto i = 0; static_cast<size_t>(i) < graphs.size(); ++i) {
     unordered_set<int> vertex_set;
     unordered_set<int> edge_set;
     for (const auto& vertex : graphs[i].vertices) {
@@ -28,7 +28,7 @@ void GBolt::find_frequent_nodes_and_edges(const Database& db) {
     }
   }
   for (const auto& kv_pair : vertex_labels) {
-    if (kv_pair.second.size() >= nsupport_) {
+    if (kv_pair.second.size() >= static_cast<size_t>(nsupport_)) {
       frequent_vertex_labels_.insert(kv_pair);
     }
   }
