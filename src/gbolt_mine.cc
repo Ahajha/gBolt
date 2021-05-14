@@ -118,10 +118,10 @@ void GBolt::mine_subgraph(
     projection_map_backward, projection_map_forward);
   // Recursive mining: first backward, last backward, and then last forward to the first forward
   for (auto it = projection_map_backward.begin(); it != projection_map_backward.end(); ++it) {
-    mine_child(it->second, &(it->first), dfs_codes, prev_thread_id, prev_graph_id);
+    mine_child(it->second, it->first, dfs_codes, prev_thread_id, prev_graph_id);
   }
   for (auto it = projection_map_forward.rbegin(); it != projection_map_forward.rend(); ++it) {
-    mine_child(it->second, &(it->first), dfs_codes, prev_thread_id, prev_graph_id);
+    mine_child(it->second, it->first, dfs_codes, prev_thread_id, prev_graph_id);
   }
   #ifndef GBOLT_SERIAL
   #pragma omp taskwait
@@ -130,7 +130,7 @@ void GBolt::mine_subgraph(
 
 void GBolt::mine_child(
   const Projection &projection,
-  const dfs_code_t* next_code,
+  const dfs_code_t& next_code,
   DfsCodes &dfs_codes,
   int prev_thread_id,
   int prev_graph_id) {
@@ -143,7 +143,7 @@ void GBolt::mine_child(
   #pragma omp task shared(projection, prev_thread_id, prev_graph_id, nsupport) firstprivate(dfs_codes)
   #endif
   {
-    dfs_codes.emplace_back(next_code);
+    dfs_codes.emplace_back(&next_code);
     mine_subgraph(projection, dfs_codes, nsupport, prev_thread_id, prev_graph_id);
     #ifdef GBOLT_SERIAL
     dfs_codes.pop_back();

@@ -127,7 +127,7 @@ class GBolt {
 
   void mine_child(
     const Projection &projection,
-    const dfs_code_t* next_code,
+    const dfs_code_t& next_code,
     DfsCodes &dfs_codes,
     int prev_thread_id,
     int prev_graph_id);

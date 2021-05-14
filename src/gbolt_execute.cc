@@ -112,7 +112,7 @@ void GBolt::project() {
   #endif
   {
     for (const auto& kv_pair : projection_map) {
-      mine_child(kv_pair.second, &(kv_pair.first), dfs_codes, prev_thread_id, prev_graph_id);
+      mine_child(kv_pair.second, kv_pair.first, dfs_codes, prev_thread_id, prev_graph_id);
     }
   }
   #ifndef GBOLT_SERIAL
