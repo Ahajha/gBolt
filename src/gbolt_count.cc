@@ -201,40 +201,42 @@ bool gbolt_instance_t::is_forward_min(
         min_projection.emplace_back(&ln_edge, i);
       }
     }
-  }
+    
+    // If the min_dfs_code is an extension from the rightmost vertex, we only
+    // need to continue looking at similar extensions (i.e. the block above).
+    if (max_id == min_dfs_code.from)
+      continue;
+    
+    for (auto j : right_most_path) {
+      const int from_id = dfs_codes[j]->from;
 
-  if (min_projection.size() == projection_end_index) {
-    for (auto i : right_most_path) {
-      const int from_id = dfs_codes[i]->from;
-      for (auto j = projection_start_index; j < projection_end_index; ++j) {
-        history.build_vertice_min(min_projection, min_graph, j);
+      const edge_t& cur_edge = history.get_edge(j);
+      const vertex_t& cur_node = min_graph.vertice[cur_edge.from];
+      const vertex_t& cur_to = min_graph.vertice[cur_edge.to];
 
-        const edge_t& cur_edge = history.get_edge(i);
-        const vertex_t& cur_node = min_graph.vertice[cur_edge.from];
-        const vertex_t& cur_to = min_graph.vertice[cur_edge.to];
-
-        for (const auto& cn_edge : cur_node.edges) {
-          const vertex_t& to_node = min_graph.vertice[cn_edge.to];
-          if (history.has_vertice(to_node.id) || cur_edge.to == to_node.id || to_node.label < min_label)
-            continue;
-          if (lexicographic_leq(cur_edge.label, cur_to.label, cn_edge.label, to_node.label)) {
-            dfs_code_t dfs_code{from_id, max_id + 1,
-              cur_node.label, cn_edge.label, to_node.label};
-            // A smaller code was found, so the given code is not minimal.
-            if (dfs_code_forward_compare_t{}(dfs_code, min_dfs_code)) {
-              return false;
-            }
-            if (dfs_code == min_dfs_code) {
-              min_projection.emplace_back(&cn_edge, j);
-            }
+      for (const auto& cn_edge : cur_node.edges) {
+        const vertex_t& to_node = min_graph.vertice[cn_edge.to];
+        if (history.has_vertice(to_node.id) || cur_edge.to == to_node.id || to_node.label < min_label)
+          continue;
+        if (lexicographic_leq(cur_edge.label, cur_to.label, cn_edge.label, to_node.label)) {
+          dfs_code_t dfs_code{from_id, max_id + 1,
+            cur_node.label, cn_edge.label, to_node.label};
+          // A smaller code was found, so the given code is not minimal.
+          if (dfs_code_forward_compare_t{}(dfs_code, min_dfs_code)) {
+            return false;
+          }
+          if (dfs_code == min_dfs_code) {
+            min_projection.emplace_back(&cn_edge, i);
           }
         }
       }
-      if (min_projection.size() > projection_end_index) {
-        return true;
-      }
+      // Every member of the RMP after this one will produce larger DFS codes,
+      // so they don't need to be checked against the minimum.
+      if (from_id == min_dfs_code.from)
+        break;
     }
   }
+
   return true;
 }
 
