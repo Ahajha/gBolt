@@ -201,12 +201,12 @@ bool gbolt_instance_t::is_forward_min(
         min_projection.emplace_back(&ln_edge, i);
       }
     }
-    
+
     // If the min_dfs_code is an extension from the rightmost vertex, we only
     // need to continue looking at similar extensions (i.e. the block above).
     if (max_id == min_dfs_code.from)
       continue;
-    
+
     for (auto j : right_most_path) {
       const int from_id = dfs_codes[j]->from;
 
