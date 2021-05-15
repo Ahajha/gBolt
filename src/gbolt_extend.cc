@@ -35,14 +35,14 @@ void GBolt::get_backward(
   const vertex_t& last_node = graph.vertice[last_edge.to];
 
   const int from_id = dfs_codes[right_most_path[0]]->to;
-  for (auto i = right_most_path.size() - 1; i > 0; --i) {
-    const edge_t& edge = history.get_edge(right_most_path[i]);
-    const int from_node_label = graph.vertice[edge.from].label;
-    const int to_node_label = graph.vertice[edge.to].label;
-    const int to_id = dfs_codes[right_most_path[i]]->from;
-    for (const auto& ln_edge : last_node.edges) {
-      if (history.has_edges(ln_edge.id))
-        continue;
+  for (const auto& ln_edge : last_node.edges) {
+    if (history.has_edges(ln_edge.id))
+      continue;
+    for (auto i = right_most_path.size() - 1; i > 0; --i) {
+      const edge_t& edge = history.get_edge(right_most_path[i]);
+      const int from_node_label = graph.vertice[edge.from].label;
+      const int to_node_label = graph.vertice[edge.to].label;
+      const int to_id = dfs_codes[right_most_path[i]]->from;
       if (ln_edge.to == edge.from &&
         lexicographic_leq(edge.label, to_node_label, ln_edge.label, last_node.label)) {
         dfs_code_t dfs_code{from_id, to_id,
