@@ -102,8 +102,7 @@ void GBolt::get_other_forward(
       const vertex_t& to_node = graph.vertice[cn_edge.to];
       // Partial pruning: guarantees that extending label is greater
       // than the minimum one
-      if (history.has_vertice(to_node.id) ||
-        to_node.id == cur_to.id || to_node.label < min_label)
+      if (history.has_vertice(to_node.id) || to_node.label < min_label)
         continue;
       if (lexicographic_leq(cur_edge.label, cur_to.label, cn_edge.label, to_node.label)) {
         dfs_code_t dfs_code{from_id, to_id + 1, cur_node.label,
