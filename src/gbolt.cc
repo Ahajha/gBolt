@@ -9,12 +9,9 @@ int main(int argc, char *argv[]) {
     ("o,output", "Output gbolt mining results", cxxopts::value<std::string>()->default_value(""))
     ("s,support", "Minimum subgraph frequency: (0.0, 1.0]", cxxopts::value<double>()->default_value("1.0"))
     ("m,mark", "Graph data separator", cxxopts::value<std::string>()->default_value(" "))
-    ("p,parents", "Output subgraph parent ids",
-     cxxopts::value<bool>()->default_value("false")->implicit_value("true"))
-    ("d,dfs", "Output subgraph dfs patterns",
-     cxxopts::value<bool>()->default_value("false")->implicit_value("true"))
-    ("n,nodes", "Output frequent nodes",
-     cxxopts::value<bool>()->default_value("false")->implicit_value("true"))
+    ("p,parents", "Output subgraph parent ids")
+    ("d,dfs", "Output subgraph dfs patterns")
+    ("n,nodes", "Output frequent nodes")
     ("h,help", "gBolt help");
 
   if (argc == 1) {
