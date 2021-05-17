@@ -140,20 +140,20 @@ bool gbolt_instance_t::is_backward_min(
 
   // i > 0, because a backward edge cannot go to the last vertex.
   const int from_id = dfs_codes[right_most_path[0]]->to;
-  for (auto i = right_most_path.size() - 1; i > 0; --i) {
-    const int to_id = dfs_codes[right_most_path[i]]->from;
-    for (auto j = projection_start_index; j < projection_end_index; ++j) {
-      history.build_edges_min(min_projection, min_graph, j);
+  for (auto j = projection_start_index; j < projection_end_index; ++j) {
+    history.build_edges_min(min_projection, min_graph, j);
 
-      const edge_t& edge = history.get_edge(right_most_path[i]);
-      const edge_t& last_edge = history.get_edge(right_most_path[0]);
-      const vertex_t& from_node = min_graph.vertice[edge.from];
-      const vertex_t& last_node = min_graph.vertice[last_edge.to];
-      const vertex_t& to_node = min_graph.vertice[edge.to];
+    const edge_t& last_edge = history.get_edge(right_most_path[0]);
+    const vertex_t& last_node = min_graph.vertice[last_edge.to];
+    for (const auto& ln_edge : last_node.edges) {
+      if (history.has_edges(ln_edge.id))
+        continue;
+      for (auto i = right_most_path.size() - 1; i > 0; --i) {
+        const int to_id = dfs_codes[right_most_path[i]]->from;
+        const edge_t& edge = history.get_edge(right_most_path[i]);
+        const vertex_t& from_node = min_graph.vertice[edge.from];
+        const vertex_t& to_node = min_graph.vertice[edge.to];
 
-      for (const auto& ln_edge : last_node.edges) {
-        if (history.has_edges(ln_edge.id))
-          continue;
         if (ln_edge.to == edge.from &&
           lexicographic_leq(edge.label, to_node.label, ln_edge.label, last_node.label)) {
           dfs_code_t dfs_code{from_id, to_id,
@@ -166,12 +166,14 @@ bool gbolt_instance_t::is_backward_min(
             min_projection.emplace_back(&ln_edge, j);
           }
         }
+        // Every member of the RMP after this one will produce larger DFS codes,
+        // so they don't need to be checked against the minimum.
+        if (to_id == min_dfs_code.to)
+          break;
       }
     }
-    if (min_projection.size() > projection_end_index)
-      return true;
   }
-  return false;
+  return true;
 }
 
 bool gbolt_instance_t::is_forward_min(
