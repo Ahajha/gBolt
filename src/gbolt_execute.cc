@@ -96,7 +96,7 @@ void GBolt::project() {
           // Push dfs code according to the same edge label
           dfs_code_t dfs_code{0, 1, vertex.label, edge.label, vertex_to_label};
           // Push all the graphs
-          projection_map[dfs_code].emplace_back(graph.id, &edge, nullptr);
+          projection_map[dfs_code].emplace_back(graph.id, edge, nullptr);
         }
       }
     }

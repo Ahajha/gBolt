@@ -48,7 +48,7 @@ void GBolt::get_backward(
         dfs_code_t dfs_code{from_id, to_id,
           last_node.label, ln_edge.label, from_node_label};
         projection_map_backward[dfs_code].
-          emplace_back(graph.id, &ln_edge, &prev_dfs);
+          emplace_back(graph.id, ln_edge, &prev_dfs);
       }
     }
   }
@@ -78,7 +78,7 @@ void GBolt::get_first_forward(
     dfs_code_t dfs_code{to_id, to_id + 1,
       last_node.label, ln_edge.label, to_node_label};
     projection_map_forward[dfs_code].
-      emplace_back(graph.id, &ln_edge, &prev_dfs);
+      emplace_back(graph.id, ln_edge, &prev_dfs);
   }
 }
 
@@ -108,7 +108,7 @@ void GBolt::get_other_forward(
         dfs_code_t dfs_code{from_id, to_id + 1, cur_node.label,
           cn_edge.label, to_node.label};
         projection_map_forward[dfs_code].
-          emplace_back(graph.id, &cn_edge, &prev_dfs);
+          emplace_back(graph.id, cn_edge, &prev_dfs);
       }
     }
   }

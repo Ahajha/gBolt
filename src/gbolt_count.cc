@@ -99,7 +99,7 @@ bool gbolt_instance_t::is_min(const DfsCodes &dfs_codes) {
 
         // If the code is minimal, it is an instance of this code sequence.
         if (dfs_code == min_dfs_code) {
-          min_projection.emplace_back(&edge, -1);
+          min_projection.emplace_back(edge, -1);
         }
       }
     }
@@ -163,7 +163,7 @@ bool gbolt_instance_t::is_backward_min(
             return false;
           }
           if (dfs_code == min_dfs_code) {
-            min_projection.emplace_back(&ln_edge, j);
+            min_projection.emplace_back(ln_edge, j);
           }
         }
         // Every member of the RMP after this one will produce larger DFS codes,
@@ -200,7 +200,7 @@ bool gbolt_instance_t::is_forward_min(
         return false;
       }
       if (dfs_code == min_dfs_code) {
-        min_projection.emplace_back(&ln_edge, i);
+        min_projection.emplace_back(ln_edge, i);
       }
     }
 
@@ -228,7 +228,7 @@ bool gbolt_instance_t::is_forward_min(
             return false;
           }
           if (dfs_code == min_dfs_code) {
-            min_projection.emplace_back(&cn_edge, i);
+            min_projection.emplace_back(cn_edge, i);
           }
         }
       }

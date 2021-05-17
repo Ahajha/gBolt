@@ -19,10 +19,10 @@ struct edge_t {
 
 // dfs projection links
 struct min_prev_dfs_t {
-  min_prev_dfs_t(const edge_t *edge, int prev) :
+  min_prev_dfs_t(const edge_t& edge, int prev) :
     edge(edge), prev(prev) {}
 
-  const edge_t *edge;
+  const edge_t& edge;
   int prev;
 };
 using MinProjection = std::vector<min_prev_dfs_t>;
@@ -32,14 +32,14 @@ A prev_dfs_t represents an instance of a subgraph being found within
 an input graph.
 */
 struct prev_dfs_t {
-  prev_dfs_t(int id, const edge_t *edge, const prev_dfs_t *prev) :
+  prev_dfs_t(int id, const edge_t& edge, const prev_dfs_t *prev) :
     id(id), edge(edge), prev(prev) {}
 
   //! The ID of the graph the subgraph was found in.
   int id;
 
-  //! A pointer to the last edge in the DFS code representation of the subgraph.
-  const edge_t *edge;
+  //! A reference to the last edge in the DFS code representation of the subgraph.
+  const edge_t& edge;
 
   //! A pointer to the subgraph instance without the last edge.
   const prev_dfs_t *prev;
