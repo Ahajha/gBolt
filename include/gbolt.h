@@ -173,7 +173,7 @@ class GBolt {
     ProjectionMapBackward &projection_map_backward);
 
   // Count
-  int count_support(const Projection &projection);
+  static int count_support(const Projection &projection);
 
  private:
   // Graphs after reconstructing
