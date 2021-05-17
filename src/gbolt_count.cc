@@ -216,7 +216,7 @@ bool gbolt_instance_t::is_forward_min(
 
       for (const auto& cn_edge : cur_node.edges) {
         const vertex_t& to_node = min_graph.vertice[cn_edge.to];
-        if (history.has_vertice(to_node.id) || cur_edge.to == to_node.id || to_node.label < min_label)
+        if (history.has_vertice(to_node.id) || to_node.label < min_label)
           continue;
         if (lexicographic_leq(cur_edge.label, cur_to.label, cn_edge.label, to_node.label)) {
           dfs_code_t dfs_code{from_id, max_id + 1,
