@@ -65,6 +65,7 @@ void GBolt::get_first_forward(
   const vertex_t& last_node = graph.vertice[last_edge.to];
   const int min_label = dfs_codes[0]->from_label;
 
+  const int to_id = dfs_codes[right_most_path[0]]->to;
   for (const auto& ln_edge : last_node.edges) {
     const int to_node_label = graph.vertice[ln_edge.to].label;
     // Partial pruning: if this label is less than the minimum label, then there
@@ -74,7 +75,6 @@ void GBolt::get_first_forward(
     // No, we cannot, for this time, the extending id is greater the the last node
     if (history.has_vertice(ln_edge.to) || to_node_label < min_label)
       continue;
-    const int to_id = dfs_codes[right_most_path[0]]->to;
     dfs_code_t dfs_code{to_id, to_id + 1,
       last_node.label, ln_edge.label, to_node_label};
     projection_map_forward[dfs_code].
