@@ -40,16 +40,20 @@ void GBolt::get_backward(
       continue;
     for (auto i = right_most_path.size() - 1; i > 0; --i) {
       const edge_t& edge = history.get_edge(right_most_path[i]);
+      if (ln_edge.to != edge.from)
+        continue;
+
       const int from_node_label = graph.vertice[edge.from].label;
       const int to_node_label = graph.vertice[edge.to].label;
       const int to_id = dfs_codes[right_most_path[i]]->from;
-      if (ln_edge.to == edge.from &&
-        lexicographic_leq(edge.label, to_node_label, ln_edge.label, last_node.label)) {
+      if (lexicographic_leq(edge.label, to_node_label, ln_edge.label, last_node.label)) {
         dfs_code_t dfs_code{from_id, to_id,
           last_node.label, ln_edge.label, from_node_label};
         projection_map_backward[dfs_code].
           emplace_back(graph.id, ln_edge, &prev_dfs);
       }
+
+      break;
     }
   }
 }
