@@ -5,6 +5,8 @@
 #include <string>
 #include <unordered_map>
 
+#define FILE_MAX_LINE 1024
+
 namespace gbolt {
 
 class Graph;

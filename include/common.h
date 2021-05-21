@@ -3,8 +3,6 @@
 
 #include <sys/time.h>
 
-#define FILE_MAX_LINE 1024
-
 #define CPU_TIMER_START(elapsed_time, t1) \
   do { \
     elapsed_time = 0.0; \
