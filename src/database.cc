@@ -55,22 +55,13 @@ void Database::read_input(const string &input_file, const string &separator) {
 
 // Construct graph by labels
 void Database::construct_graphs(
-  #ifdef GBOLT_PERFORMANCE
   const unordered_map<int, std::vector<int> > &frequent_vertex_labels,
   const unordered_map<int, int> &frequent_edge_labels,
-  #else
-  const map<int, std::vector<int> > &frequent_vertex_labels,
-  const map<int, int> &frequent_edge_labels,
-  #endif
   vector<Graph> &graphs) {
 
   graphs.reserve(input_graphs_.size());
 
-  #ifdef GBOLT_PERFORMANCE
   unordered_map<int, int> id_map;
-  #else
-  map<int, int> id_map;
-  #endif
 
   for (const auto& input_graph : input_graphs_) {
     graphs.emplace_back();
