@@ -87,8 +87,8 @@ void Database::construct_graphs(
         frequent_edge_labels.find(edge.label) != frequent_edge_labels.end()) {
         const int to = id_map[edge.to];
         const int from = id_map[edge.from];
-        vertice[from].edges.emplace_back(from, edge.label, to, edge_id);
-        vertice[to  ].edges.emplace_back(to, edge.label, from, edge_id);
+        vertice[from].edges.emplace_back(from, to, edge.label, edge_id);
+        vertice[to  ].edges.emplace_back(to, from, edge.label, edge_id);
         ++edge_id;
       }
     }

@@ -7,12 +7,12 @@ namespace gbolt {
 
 // Direct edge structure
 struct edge_t {
-  edge_t(int from, int label, int to, int id) :
-    from(from), label(label), to(to), id(id) {}
+  edge_t(int from, int to, int label, int id) :
+    from(from), to(to), label(label), id(id) {}
 
   int from;
-  int label;
   int to;
+  int label;
   int id;
 };
 
