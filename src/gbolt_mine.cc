@@ -1,19 +1,19 @@
 #include <gbolt.h>
 #include <graph.h>
-#include <common.h>
 #include <sstream>
 #include <database.h>
+#include <unordered_set>
 
 namespace gbolt {
 
 void GBolt::find_frequent_nodes_and_edges(const Database& db) {
-  unordered_map<int, vector<int> > vertex_labels;
-  unordered_map<int, int> edge_labels;
+  std::unordered_map<int, std::vector<int> > vertex_labels;
+  std::unordered_map<int, int> edge_labels;
 
   const auto& graphs = db.get_graphs();
   for (auto i = 0; static_cast<size_t>(i) < graphs.size(); ++i) {
-    unordered_set<int> vertex_set;
-    unordered_set<int> edge_set;
+    std::unordered_set<int> vertex_set;
+    std::unordered_set<int> edge_set;
     for (const auto& vertex : graphs[i].vertices) {
       vertex_set.insert(vertex.label);
     }
@@ -74,7 +74,7 @@ void GBolt::save(bool output_parent, bool output_pattern, bool output_frequent_n
   }
   // Save output for frequent nodes
   if (output_frequent_nodes) {
-    string output_file_nodes = output_file_ + ".nodes";
+    std::string output_file_nodes = output_file_ + ".nodes";
     Output output_frequent_nodes_(output_file_nodes);
 
     int graph_id = 0;

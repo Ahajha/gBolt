@@ -1,7 +1,6 @@
 #ifndef INCLUDE_GRAPH_H_
 #define INCLUDE_GRAPH_H_
 
-#include <common.h>
 #include <vector>
 
 namespace gbolt {
@@ -50,7 +49,7 @@ A Projection represents a support list. Subgraphs are grouped by graph ID, such 
 if two prev_dfs_ts have the same ID, they are either adjacent or separated by other
 prev_dfs_ts with the same ID.
 */
-using Projection = vector<prev_dfs_t>;
+using Projection = std::vector<prev_dfs_t>;
 
 // dfs codes forward and backward compare
 struct dfs_code_t {
@@ -72,7 +71,7 @@ struct dfs_code_t {
   int edge_label;
   int to_label;
 };
-using DfsCodes = vector<const dfs_code_t *>;
+using DfsCodes = std::vector<const dfs_code_t *>;
 
 struct dfs_code_project_compare_t {
   bool operator() (const dfs_code_t &first, const dfs_code_t &second) const {
@@ -118,9 +117,9 @@ struct vertex_t {
 
   int id;
   int label;
-  vector<edge_t> edges;
+  std::vector<edge_t> edges;
 };
-using Vertice = vector<vertex_t>;
+using Vertice = std::vector<vertex_t>;
 
 class Graph {
  public:

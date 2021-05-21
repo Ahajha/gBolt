@@ -1,3 +1,4 @@
+#include <common.h>
 #include <gbolt.h>
 #include <history.h>
 #include <algorithm>

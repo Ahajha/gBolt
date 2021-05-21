@@ -1,13 +1,17 @@
 #ifndef INCLUDE_GBOLT_H_
 #define INCLUDE_GBOLT_H_
 
-#include <common.h>
 #include <graph.h>
 #include <history.h>
 #include <output.h>
+#include <unordered_map>
 #include <map>
 #include <vector>
 #include <string>
+
+#ifndef GBOLT_SERIAL
+#include <omp.h>
+#endif
 
 namespace gbolt {
 
@@ -20,7 +24,7 @@ struct gbolt_instance_t {
   std::vector<int> right_most_path;
   MinProjection min_projection;
 
-  gbolt_instance_t(int max_edges, int max_vertice, const string& output_file_thread)
+  gbolt_instance_t(int max_edges, int max_vertice, const std::string& output_file_thread)
     : history(max_edges, max_vertice), output(output_file_thread) {}
 
   //!@name Methods relating to determining if a DFS code sequence is minimal:
@@ -96,19 +100,19 @@ struct gbolt_instance_t {
 
 class GBolt {
  public:
-  GBolt(const string &output_file, double support) :
+  GBolt(const std::string &output_file, double support) :
     output_file_(output_file), support_(support) {}
 
-  void read_input(const string &input_file, const string &separator);
+  void read_input(const std::string &input_file, const std::string &separator);
 
   void execute();
 
   void save(bool output_parent = false, bool output_pattern = false, bool output_frequent_nodes = false);
 
  private:
-  using ProjectionMap = map<dfs_code_t, Projection, dfs_code_project_compare_t>;
-  using ProjectionMapBackward = map<dfs_code_t, Projection, dfs_code_backward_compare_t>;
-  using ProjectionMapForward = map<dfs_code_t, Projection, dfs_code_forward_compare_t>;
+  using ProjectionMap = std::map<dfs_code_t, Projection, dfs_code_project_compare_t>;
+  using ProjectionMapBackward = std::map<dfs_code_t, Projection, dfs_code_backward_compare_t>;
+  using ProjectionMapForward = std::map<dfs_code_t, Projection, dfs_code_forward_compare_t>;
 
  private:
   // Mine
@@ -177,14 +181,14 @@ class GBolt {
 
  private:
   // Graphs after reconstructing
-  vector<Graph> graphs_;
+  std::vector<Graph> graphs_;
   // Single instance of minigraph
-  unordered_map<int, vector<int> > frequent_vertex_labels_;
-  unordered_map<int, int> frequent_edge_labels_;
-  string output_file_;
+  std::unordered_map<int, std::vector<int> > frequent_vertex_labels_;
+  std::unordered_map<int, int> frequent_edge_labels_;
+  std::string output_file_;
   double support_;
   int nsupport_;
-  vector<gbolt_instance_t> gbolt_instances_;
+  std::vector<gbolt_instance_t> gbolt_instances_;
 };
 
 }  // namespace gbolt

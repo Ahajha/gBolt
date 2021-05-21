@@ -5,7 +5,7 @@
 
 namespace gbolt {
 
-void GBolt::read_input(const string &input_file, const string &separator) {
+void GBolt::read_input(const std::string &input_file, const std::string &separator) {
   Database db;
 
   #ifdef GBOLT_PERFORMANCE
@@ -74,7 +74,7 @@ void GBolt::init_instances() {
     #ifdef GBOLT_PERFORMANCE
     LOG_INFO("gbolt create thread %d", i);
     #endif
-    string output_file_thread = output_file_ + ".t" + std::to_string(i);
+    std::string output_file_thread = output_file_ + ".t" + std::to_string(i);
     gbolt_instances_.emplace_back(max_edges, max_vertice, output_file_thread);
   }
 }

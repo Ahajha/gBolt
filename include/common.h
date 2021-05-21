@@ -2,16 +2,6 @@
 #define INCLUDE_COMMON_H_
 
 #include <sys/time.h>
-#ifndef GBOLT_SERIAL
-#include <omp.h>
-#endif
-#include <config.h>
-#include <map>
-#include <unordered_map>
-#include <unordered_set>
-#include <string>
-#include <set>
-#include <vector>
 
 #define FILE_MAX_LINE 1024
 
@@ -61,13 +51,6 @@
   } while (0)
 
 namespace gbolt {
-
-using std::map;
-using std::unordered_map;
-using std::string;
-using std::set;
-using std::unordered_set;
-using std::vector;
 
 /*!
 Returns true iff (a,b) compares lexicographically less than or equal to (c,d).

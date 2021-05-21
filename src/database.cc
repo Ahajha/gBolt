@@ -7,7 +7,7 @@
 
 namespace gbolt {
 
-void Database::read_input(const string &input_file, const string &separator) {
+void Database::read_input(const std::string &input_file, const std::string &separator) {
   std::ifstream fin(input_file);
 
   if (!fin.is_open()) {
@@ -55,13 +55,13 @@ void Database::read_input(const string &input_file, const string &separator) {
 
 // Construct graph by labels
 void Database::construct_graphs(
-  const unordered_map<int, std::vector<int> > &frequent_vertex_labels,
-  const unordered_map<int, int> &frequent_edge_labels,
-  vector<Graph> &graphs) {
+  const std::unordered_map<int, std::vector<int> > &frequent_vertex_labels,
+  const std::unordered_map<int, int> &frequent_edge_labels,
+  std::vector<Graph> &graphs) {
 
   graphs.reserve(input_graphs_.size());
 
-  unordered_map<int, int> id_map;
+  std::unordered_map<int, int> id_map;
 
   for (const auto& input_graph : input_graphs_) {
     graphs.emplace_back();
