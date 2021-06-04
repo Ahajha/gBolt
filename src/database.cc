@@ -80,8 +80,8 @@ void Database::construct_graphs(
 
     int edge_id = 0;
     for (const auto& edge : input_graph.edges) {
-      const int label_from = vertice[edge.from].label;
-      const int label_to = vertice[edge.to].label;
+      const int label_from = input_graph.vertices[edge.from].label;
+      const int label_to = input_graph.vertices[edge.to].label;
       if (frequent_vertex_labels.find(label_from) != frequent_vertex_labels.end() &&
         frequent_vertex_labels.find(label_to) != frequent_vertex_labels.end() &&
         frequent_edge_labels.find(edge.label) != frequent_edge_labels.end()) {
