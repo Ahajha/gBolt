@@ -37,9 +37,9 @@ void gbolt_instance_t::build_min_graph(const DfsCodes &dfs_codes) {
     vertice[edge->to].id = edge->to;
     // Push an edge
     vertice[edge->from].edges.emplace_back(
-      edge->from, edge->to, edge->edge_label, edge_id);
+      edge->from, edge->edge_label, edge->to, edge_id);
     vertice[edge->to].edges.emplace_back(
-      edge->to, edge->from, edge->edge_label, edge_id);
+      edge->to, edge->edge_label, edge->from, edge_id);
     ++edge_id;
   }
   min_graph.nedges = edge_id;
