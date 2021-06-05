@@ -10,7 +10,7 @@ class History {
   History(int max_edges, int max_vertice) : edge_size_(0) {
     edges_ = new ConstEdgePointer[max_edges];
     has_edges_ = new bool[max_edges];
-    has_vertice_ = new bool[max_vertice];
+    has_vertice_ = new int[max_vertice];
   }
 
   /*!
@@ -28,12 +28,14 @@ class History {
   }
 
   bool has_vertice(int index) const {
-    return has_vertice_[index];
+    return has_vertice_[index] != 0;
   }
 
   const edge_t& get_edge(int index) const {
     return *(edges_[edge_size_ - index - 1]);
   }
+
+  void clear() { current = nullptr; }
 
   ~History() {
     delete[] edges_;
@@ -52,8 +54,11 @@ class History {
   // has_edges_ and has_vertice_ at a given index is true if this history has been
   // built with an object that has that given edge/vertex ID.
   bool *has_edges_;
-  bool *has_vertice_;
+  int *has_vertice_;
   int edge_size_;
+
+  const prev_dfs_t* current = nullptr;
+  const Graph* cur_graph = nullptr;
 };
 
 }  // namespace gbolt

@@ -22,6 +22,7 @@ void GBolt::enumerate(
     get_other_forward(link, history, graph, dfs_codes, right_most_path,
       projection_map_forward);
   }
+  history.clear();
 }
 
 void GBolt::get_backward(
