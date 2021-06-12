@@ -62,7 +62,7 @@ void gbolt_instance_t::report(const DfsCodes &dfs_codes,
   }
   ss << '\n';
 
-  output.push_back(ss.str(), nsupport, output.size(), prev_thread_id, prev_graph_id);
+  output.push_back(ss.str(), nsupport, prev_thread_id, prev_graph_id);
 }
 
 void GBolt::save(bool output_parent, bool output_pattern, bool output_frequent_nodes) {
@@ -77,7 +77,6 @@ void GBolt::save(bool output_parent, bool output_pattern, bool output_frequent_n
     std::string output_file_nodes = output_file_ + ".nodes";
     Output output_frequent_nodes_(output_file_nodes);
 
-    int graph_id = 0;
     for (const auto& kv_pair : frequent_vertex_labels_) {
       std::stringstream ss;
 
@@ -89,7 +88,7 @@ void GBolt::save(bool output_parent, bool output_pattern, bool output_frequent_n
       }
       ss << '\n';
 
-      output_frequent_nodes_.push_back(ss.str(), kv_pair.second.size(), graph_id++);
+      output_frequent_nodes_.push_back(ss.str(), kv_pair.second.size());
     }
     output_frequent_nodes_.save(false, true);
   }

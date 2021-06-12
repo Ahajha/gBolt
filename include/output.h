@@ -14,9 +14,9 @@ class Output {
     return support_.size();
   }
 
-  void push_back(const std::string &str, int nsupport, int graph_id);
+  void push_back(const std::string &str, int nsupport);
 
-  void push_back(const std::string &str, int nsupport, int graph_id, int thread_id, int parent_id);
+  void push_back(const std::string &str, int nsupport, int thread_id, int parent_id);
 
   void save(bool output_parent = false, bool output_pattern = false);
 
@@ -25,7 +25,6 @@ class Output {
   std::vector<int> support_;
   std::vector<int> thread_id_;
   std::vector<int> parent_id_;
-  std::vector<int> graph_id_;
   const std::string output_file_;
 };
 
